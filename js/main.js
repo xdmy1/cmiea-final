@@ -698,7 +698,7 @@ function initializeSearch() {
     if (searchInput && searchDropdown) {
         // Force proper positioning with inline styles to override any CSS
         searchDropdown.style.position = "absolute";
-        searchDropdown.style.zIndex = "9999";
+        searchDropdown.style.zIndex = "9";
         searchDropdown.style.top = "100%";
         searchDropdown.style.left = "0";
         searchDropdown.style.right = "0";
@@ -708,7 +708,7 @@ function initializeSearch() {
         const parentElement = searchDropdown.parentElement;
         if (parentElement) {
             parentElement.style.position = "relative";
-            parentElement.style.zIndex = "999";
+            parentElement.style.zIndex = "9";
         }
         
         // Remove any existing event listeners to prevent duplicates
