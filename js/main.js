@@ -382,15 +382,16 @@ async function renderCourses() {
                 coursesHTML += `
                     <a href="/curs.html?id=${course.id}">
                         <div class="grid grid-cols-1 gap-4 p-5 dark:bg-dark2 dark:border-white/50 rounded-2xl h-full z-10 hover:bg-black/10 dark:hover:bg-gray-100/10 bg-white duration-200 shadow-xl">
-                            <div class="flex justify-start items-center gap-3 font-medium">
-                            <div class="w-12 h-12 rounded-lg flex items-center justify-center overflow-hidden shadow-sm">
-                                <img src="${course.image || '/assets/default-course.png'}" class="w-full h-full object-cover" alt="Course">
+                            <div class="flex justify-start items-start gap-3 font-medium">
+                                <div class="w-12 h-12 flex-shrink-0 rounded-lg flex items-center justify-center overflow-hidden shadow-sm">
+                                    <img src="${course.image || '/assets/default-course.png'}" class="w-full h-full object-cover" alt="Course">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="lg:text-xl dark:text-white line-clamp-2 break-words">${course.name || 'Curs fără nume'}</p>
+                                </div>
                             </div>
-                            <div><p class="lg:text-xl dark:text-white">${course.name || 'Curs fără nume'}</p></div>
-                        </div>
-                        
-                            <div class="max-w-[250px]">
-                                <p class="text-sm lg:text-md 2xl:text-lg text-sur dark:text-white/50">${course.description || 'Nu există descriere disponibilă'}</p>
+                            <div class="max-w-full">
+                                <p class="text-sm lg:text-md 2xl:text-lg text-sur dark:text-white/50 line-clamp-3">${course.description || 'Nu există descriere disponibilă'}</p>
                             </div>
 
                             <!-- Course details section - icons are not limited now -->
