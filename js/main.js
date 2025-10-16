@@ -663,8 +663,6 @@ function performSearch(searchTerm) {
         searchDropdown.innerHTML = resultsHTML;
         searchDropdown.classList.remove('hidden');
         
-        // Ensure dropdown is visible above other elements
-        searchDropdown.style.zIndex = "9";
     } else {
         searchDropdown.innerHTML = `
             <div class="p-4 text-center text-gray-500 dark:text-gray-400">
