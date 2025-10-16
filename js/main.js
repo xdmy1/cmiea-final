@@ -383,7 +383,7 @@ async function renderCourses() {
                     <a href="/curs.html?id=${course.id}">
                         <div class="grid grid-cols-1 gap-4 p-5 dark:bg-dark2 dark:border-white/50 rounded-2xl h-full z-10 hover:bg-black/10 dark:hover:bg-gray-100/10 bg-white duration-200 shadow-xl">
                             <div class="flex justify-start items-start gap-3 font-medium">
-                                <div class="w-12 h-12 flex-shrink-0 rounded-lg flex items-center justify-center overflow-hidden">
+                                <div class="w-12 h-12 flex-shrink-0 rounded-lg flex items-center justify-center overflow-hidden ">
                                     <img src="${course.image || '/assets/default-course.png'}" class="w-full h-full object-cover" alt="Course">
                                 </div>
                                 <div class="flex-1 min-w-0">
