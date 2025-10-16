@@ -583,7 +583,7 @@ function changePage(page) {
     
     currentPage = page;
     renderCourses();
-    document.getElementById('courses-container')?.scrollIntoView({ behavior: 'smooth' });
+    // document.getElementById('courses-container')?.scrollIntoView({ behavior: 'smooth' }); // Remove or comment out this line
 }
 
 // ===== SEARCH FUNCTIONALITY =====
