@@ -61,7 +61,6 @@ li, button {
     gap: 5rem;
     animation: 15s slides infinite linear;
     align-items: center;
-
   }
   
   .logos:hover .logo_items {
