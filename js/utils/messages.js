@@ -24,11 +24,20 @@ export const messages = {
     loading: {
         login: "Se conectează...",
         register: "Se creează contul...",
-        google: "Se conectează cu Google..."
+        google: "Se conectează cu Google...",
+        reset: "Se trimite..."
     },
     buttons: {
         login: "Conectare",
         register: "Înregistrare",
         forgotPassword: "Ai uitat parola?"
+    },
+    resetPassword: {
+        emptyEmail: "Vă rugăm să introduceți adresa de email.",
+        success: "Email-ul de resetare a parolei a fost trimis! Verificați căsuța de email și folderul spam/junk. Dacă nu primiți email-ul în 5-10 minute, verificați că adresa de email este corectă și că aveți un cont cu această adresă.",
+        error: "Eroare la trimiterea email-ului de resetare: ",
+        buttons: {
+            send: "Trimite"
+        }
     }
 };

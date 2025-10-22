@@ -92,9 +92,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     sendResetBtn?.addEventListener('click', async () => {
-        const email = resetEmailInput?.value;
+        const email = resetEmailInput?.value?.trim();
+        
         if (!email) {
             alert(messages.resetPassword.emptyEmail);
+            return;
+        }
+
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Vă rugăm să introduceți o adresă de email validă.");
             return;
         }
 
@@ -102,14 +110,58 @@ document.addEventListener('DOMContentLoaded', function() {
             sendResetBtn.disabled = true;
             sendResetBtn.textContent = messages.loading.reset;
             
+            console.log('Firebase Auth instance:', auth);
+            console.log('Current auth state:', auth.currentUser);
+            console.log('Attempting to send password reset email to:', email);
+            
+            // Check if user is currently signed in
+            if (auth.currentUser) {
+                console.log('⚠️ User is currently signed in. Email:', auth.currentUser.email);
+                console.log('⚠️ Trying to reset password for same email?', auth.currentUser.email === email);
+            }
+            
+            // Send the reset email directly (Firebase will handle user existence check)
+            console.log('🔍 Sending password reset email...');
             await sendPasswordResetEmail(auth, email);
             
-            alert(messages.resetPassword.success);
+            console.log('✅ Firebase sendPasswordResetEmail completed successfully');
+            console.log('📧 Email should be sent to:', email);
+            console.log('🔍 Debugging info:');
+            console.log('   - Firebase project ID:', auth.app.options.projectId);
+            console.log('   - Auth domain:', auth.app.options.authDomain);
+            console.log('   - Current timestamp:', new Date().toISOString());
+            
+            // Show a more detailed success message
+            const detailedMessage = `Email de resetare trimis către ${email}.\n\nDacă nu primești email-ul:\n1. Verifică folderul spam/junk\n2. Așteaptă până la 15 minute\n3. Verifică că ai cont cu acest email\n4. Încearcă cu alt furnizor de email`;
+            
+            alert(detailedMessage);
             resetModal?.classList.add('hidden');
             resetEmailInput.value = '';
         } catch (error) {
             console.error('Error sending reset email:', error);
-            alert(messages.resetPassword.error + error.message);
+            console.error('Error code:', error.code);
+            console.error('Error message:', error.message);
+            
+            let errorMessage = messages.resetPassword.error;
+            
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    errorMessage = "Nu există un cont cu această adresă de email.";
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = "Adresa de email nu este validă.";
+                    break;
+                case 'auth/too-many-requests':
+                    errorMessage = "Prea multe cereri. Vă rugăm să încercați mai târziu.";
+                    break;
+                case 'auth/network-request-failed':
+                    errorMessage = "Eroare de rețea. Verificați conexiunea la internet.";
+                    break;
+                default:
+                    errorMessage = messages.resetPassword.error + error.message;
+            }
+            
+            alert(errorMessage);
         } finally {
             sendResetBtn.disabled = false;
             sendResetBtn.textContent = messages.resetPassword.buttons.send;
