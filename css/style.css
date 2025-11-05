@@ -234,6 +234,70 @@ li, button {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Floating Telegram Bubble */
+.telegram-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #229ED9, #0088cc);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(34, 158, 217, 0.4);
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  animation: float-pulse 3s ease-in-out infinite;
+}
+
+.telegram-float:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(34, 158, 217, 0.6);
+  background: linear-gradient(135deg, #0088cc, #229ED9);
+}
+
+.telegram-float i {
+  color: white;
+  font-size: 24px;
+}
+
+@keyframes float-pulse {
+  0%, 100% {
+    transform: translateY(0px);
+    box-shadow: 0 4px 12px rgba(34, 158, 217, 0.4);
+  }
+  50% {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(34, 158, 217, 0.5);
+  }
+}
+
+/* Dark mode adjustments */
+.dark .telegram-float {
+  box-shadow: 0 4px 12px rgba(34, 158, 217, 0.3);
+}
+
+.dark .telegram-float:hover {
+  box-shadow: 0 6px 20px rgba(34, 158, 217, 0.5);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .telegram-float {
+    width: 48px;
+    height: 48px;
+    bottom: 16px;
+    right: 16px;
+  }
+  
+  .telegram-float i {
+    font-size: 20px;
+  }
+}
  
 
 
