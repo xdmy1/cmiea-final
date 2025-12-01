@@ -42,6 +42,37 @@ let courseCache = {
     enrollmentCounts: {} // Cache for enrollment counts
 };
 
+/**
+ * Shortens month names from full to abbreviated form
+ * Ex: "septembrie 2025 - octombrie 2025" -> "Sep 2025 - Oct 2025"
+ */
+function shortenPeriod(periodo) {
+    if (!periodo || typeof periodo !== 'string') return periodo;
+    
+    const monthMap = {
+        'ianuarie': 'Ian',
+        'februarie': 'Feb',
+        'martie': 'Mar',
+        'aprilie': 'Apr',
+        'mai': 'Mai',
+        'iunie': 'Iun',
+        'iulie': 'Iul',
+        'august': 'Aug',
+        'septembrie': 'Sep',
+        'octombrie': 'Oct',
+        'noiembrie': 'Nov',
+        'decembrie': 'Dec'
+    };
+    
+    let result = periodo;
+    // Replace each month name with its abbreviated form (case-insensitive)
+    for (const [fullMonth, shortMonth] of Object.entries(monthMap)) {
+        result = result.replace(new RegExp(fullMonth, 'gi'), shortMonth);
+    }
+    
+    return result;
+}
+
 // ===== NAVIGATION FUNCTIONALITY =====
 document.getElementById("burger")?.addEventListener("click", function () {
     document.getElementById("phone-nav")?.classList.remove("hidden");
@@ -413,7 +444,7 @@ async function renderCourses() {
                                     </div>
                                     <div class="flex gap-1 items-center">
                                         <i class="ph ph-calendar-dots text-xl text-main"></i>
-                                        <p class="lg:text-md 2xl:text-lg">${course.perioada || 'N/A'}</p>
+                                        <p class="lg:text-md 2xl:text-lg">${shortenPeriod(course.perioada) || 'N/A'}</p>
                                     </div>
                                 </div>
                             </div>
