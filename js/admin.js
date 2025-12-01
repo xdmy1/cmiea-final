@@ -1577,6 +1577,14 @@ function initEventModal() {
         console.log("Close button clicked");
         modalClone.classList.add('hidden');
     };
+    // Also support the top-close button we added in the HTML (duplicate visual X)
+    const newCloseBtnTop = modalClone.querySelector('#closeEventModalBtnTop');
+    if (newCloseBtnTop) {
+        newCloseBtnTop.onclick = function() {
+            console.log("Top close button clicked");
+            modalClone.classList.add('hidden');
+        };
+    }
     
     newCancelBtn.onclick = function() {
         console.log("Cancel button clicked");
