@@ -60,6 +60,35 @@ let isAdmin = false;
 let currentSection = 'course';
 let eventRegistrationsTableBody = null;
 
+// Helper: normalize a stored date (Firestore Timestamp, ISO string, number, Date)
+function normalizeToDate(value) {
+    if (!value) return null;
+    // Firestore Timestamp (compat) has toDate()
+    try {
+        if (typeof value.toDate === 'function') return value.toDate();
+    } catch (e) {}
+
+    // Firestore-like plain object with seconds
+    if (value && typeof value === 'object' && ('seconds' in value)) {
+        return new Date(value.seconds * 1000);
+    }
+
+    if (value instanceof Date) return value;
+
+    if (typeof value === 'string') {
+        const d = new Date(value);
+        if (!isNaN(d.getTime())) return d;
+    }
+
+    if (typeof value === 'number') {
+        // if looks like seconds (10 digits) convert to ms
+        if (value < 1e12) return new Date(value * 1000);
+        return new Date(value);
+    }
+
+    return null;
+}
+
 // Theme toggle functionality
 const setupThemeToggle = (toggleBtn, darkIcon, lightIcon) => {
     if (!toggleBtn || !darkIcon || !lightIcon) return;
@@ -1421,8 +1450,10 @@ function appendEventRow(event) {
         row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700';
     }
     
-    const startDate = event.startDate ? new Date(event.startDate).toLocaleDateString('ro-RO') : 'N/A';
-    const status = getEventStatus(event.startDate, event.endDate);
+    const sd = normalizeToDate(event.startDate);
+    const ed = normalizeToDate(event.endDate);
+    const startDate = sd ? sd.toLocaleDateString('ro-RO') : 'N/A';
+    const status = getEventStatus(sd, ed);
     const statusBadge = getEventStatusBadge(status);
     
     row.innerHTML = `
@@ -1482,11 +1513,12 @@ function appendEventRow(event) {
 
 function getEventStatus(startDate, endDate) {
     const now = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate || startDate);
-    
+    const start = normalizeToDate(startDate);
+    const end = normalizeToDate(endDate) || start;
+
+    if (!start) return 'upcoming';
     if (now < start) return 'upcoming';
-    if (now >= start && now <= end) return 'ongoing';
+    if (now >= start && end && now <= end) return 'ongoing';
     return 'past';
 }
 
@@ -1643,7 +1675,39 @@ function handleEventFormSubmit(event) {
     
     for (let [key, value] of formData.entries()) {
         if (key === 'startDate' || key === 'endDate') {
-            eventData[key] = new Date(value);
+            // value comes from <input type="datetime-local"> in format: YYYY-MM-DDTHH:MM
+            if (value) {
+                const m = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/);
+                let parsedDate = null;
+                if (m) {
+                    const year = parseInt(m[1], 10);
+                    const month = parseInt(m[2], 10) - 1; // JS months 0-based
+                    const day = parseInt(m[3], 10);
+                    const hour = parseInt(m[4], 10);
+                    const minute = parseInt(m[5], 10);
+                    const second = m[6] ? parseInt(m[6], 10) : 0;
+                    parsedDate = new Date(year, month, day, hour, minute, second);
+                } else {
+                    // fallback to Date constructor
+                    parsedDate = new Date(value);
+                }
+
+                if (isNaN(parsedDate.getTime())) {
+                    console.warn('Could not parse date value for', key, value);
+                    eventData[key] = null;
+                } else {
+                    // store as Firestore Timestamp so it works natively in Firebase
+                    try {
+                        eventData[key] = firebase.firestore.Timestamp.fromDate(parsedDate);
+                    } catch (err) {
+                        // Fallback to ISO string if Timestamp API not available for some reason
+                        console.warn('Could not create Firestore Timestamp, falling back to ISO string', err);
+                        eventData[key] = parsedDate.toISOString();
+                    }
+                }
+            } else {
+                eventData[key] = null;
+            }
         } else if (key === 'availableSpots') {
             eventData[key] = parseInt(value) || 0;
         } else {
@@ -1798,8 +1862,8 @@ function fillFormWithEventData(event, formElement = null) {
     if (event.startDate) {
         const startDateElement = form.querySelector('#eventStartDate');
         if (startDateElement) {
-            const startDate = new Date(event.startDate);
-            startDateElement.value = startDate.toISOString().slice(0, 16);
+            const startDate = normalizeToDate(event.startDate);
+            startDateElement.value = startDate ? startDate.toISOString().slice(0, 16) : '';
             console.log(`Set startDate = ${startDateElement.value}`);
         }
     }
@@ -1807,8 +1871,8 @@ function fillFormWithEventData(event, formElement = null) {
     if (event.endDate) {
         const endDateElement = form.querySelector('#eventEndDate');
         if (endDateElement) {
-            const endDate = new Date(event.endDate);
-            endDateElement.value = endDate.toISOString().slice(0, 16);
+            const endDate = normalizeToDate(event.endDate);
+            endDateElement.value = endDate ? endDate.toISOString().slice(0, 16) : '';
             console.log(`Set endDate = ${endDateElement.value}`);
         }
     }
