@@ -440,7 +440,7 @@ async function renderCourses() {
                                 <div class="flex flex-col gap-1">
                                     <div class="flex gap-1 items-center">
                                         <i class="ph ph-user text-xl text-main"></i>
-                                        <p class="lg:text-md 2xl:text-lg">Locuri disponibile: ${course.remainingSpots > 0 ? course.remainingSpots : 0}</p>
+                                        <p class="lg:text-md 2xl:text-lg">Locuri rămase: ${course.remainingSpots > 0 ? course.remainingSpots : 0}</p>
                                     </div>
                                     <div class="flex gap-1 items-center">
                                         <i class="ph ph-calendar-dots text-xl text-main"></i>
