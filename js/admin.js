@@ -332,8 +332,16 @@ function initializeAdmin() {
 function setupEventListeners() {
     if (addCourseBtn) addCourseBtn.addEventListener('click', showAddCourseModal);
     if (addEventBtn) addEventBtn.addEventListener('click', showAddEventModal);
+    
+    // Course and event modal close buttons
     if (closeModalBtn) closeModalBtn.addEventListener('click', hideModal);
+    const closeEventModalBtn = document.getElementById('closeEventModalBtn');
+    if (closeEventModalBtn) closeEventModalBtn.addEventListener('click', hideModal);
+    
     if (cancelBtn) cancelBtn.addEventListener('click', hideModal);
+    const cancelEventBtn = document.getElementById('cancelEventBtn');
+    if (cancelEventBtn) cancelEventBtn.addEventListener('click', hideModal);
+    
     if (courseForm) courseForm.addEventListener('submit', handleCourseFormSubmit);
     if (eventForm) eventForm.addEventListener('submit', handleEventFormSubmit);
     if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', hideDeleteModal);
@@ -1695,8 +1703,6 @@ function initEventModal() {
     console.log("Initializing event modal");
     
     const modal = document.getElementById('eventModal');
-    const closeBtn = document.getElementById('closeEventModalBtn');
-    const cancelBtn = document.getElementById('cancelEventBtn');
     const form = document.getElementById('eventForm');
     
     if (!modal || !form) {
@@ -1704,52 +1710,14 @@ function initEventModal() {
         return null;
     }
     
-    const modalClone = modal.cloneNode(true);
-    modal.parentNode.replaceChild(modalClone, modal);
-    
-    const newCloseBtn = modalClone.querySelector('#closeEventModalBtn');
-    const newCancelBtn = modalClone.querySelector('#cancelEventBtn');
-    const newForm = modalClone.querySelector('#eventForm');
-    
-    newCloseBtn.onclick = function() {
-        console.log("Close button clicked");
-        modalClone.classList.add('hidden');
-    };
-    // Also support the top-close button we added in the HTML (duplicate visual X)
-    const newCloseBtnTop = modalClone.querySelector('#closeEventModalBtnTop');
-    if (newCloseBtnTop) {
-        newCloseBtnTop.onclick = function() {
-            console.log("Top close button clicked");
-            modalClone.classList.add('hidden');
-        };
-    }
-    
-    newCancelBtn.onclick = function() {
-        console.log("Cancel button clicked");
-        modalClone.classList.add('hidden');
-    };
-    
-    newForm.onsubmit = function(e) {
-        e.preventDefault();
-        console.log("Form submitted");
-        handleEventFormSubmit(e);
-    };
-    
-    modalClone.onclick = function(e) {
-        if (e.target === modalClone) {
-            console.log("Clicked outside modal");
-            modalClone.classList.add('hidden');
-        }
-    };
-    
-    console.log("Event modal initialized with proper event handlers");
+    console.log("Event modal initialized");
     
     return {
-        modal: modalClone,
-        form: newForm,
-        titleElement: modalClone.querySelector('#eventModalTitle'),
-        idField: modalClone.querySelector('#eventIdField'),
-        idInput: modalClone.querySelector('#eventId')
+        modal: modal,
+        form: form,
+        titleElement: modal.querySelector('#eventModalTitle'),
+        idField: modal.querySelector('#eventIdField'),
+        idInput: modal.querySelector('#eventId')
     };
 }
 
