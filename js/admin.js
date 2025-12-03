@@ -59,6 +59,9 @@ let currentEventId = null;
 let isAdmin = false;
 let currentSection = 'course';
 let eventRegistrationsTableBody = null;
+// Cache & sorting for enrollment requests
+let enrollmentRequestsCache = [];
+let enrollmentSortDesc = true; // start with newest first
 
 // Helper: normalize a stored date (Firestore Timestamp, ISO string, number, Date)
 function normalizeToDate(value) {
@@ -345,6 +348,24 @@ function setupEventListeners() {
     }
     if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
     if (logoutBtnMobile) logoutBtnMobile.addEventListener('click', handleLogout);
+
+    // Enrollment section: export and sorting
+    const exportEnrollmentBtn = document.getElementById('exportEnrollmentBtn');
+    const enrollmentDateHeader = document.getElementById('enrollmentDateHeader');
+
+    if (exportEnrollmentBtn) {
+        exportEnrollmentBtn.addEventListener('click', exportEnrollmentCSV);
+    }
+
+    if (enrollmentDateHeader) {
+        enrollmentDateHeader.addEventListener('click', () => {
+            enrollmentSortDesc = !enrollmentSortDesc;
+            updateEnrollmentSortIcon();
+            renderEnrollmentTable();
+        });
+    }
+    // Set initial icon state
+    updateEnrollmentSortIcon();
 }
 
 // ========== EVENT REGISTRATIONS SECTION ==========
@@ -955,36 +976,41 @@ function loadEnrollmentRequests() {
     
     console.log("Loading enrollment requests");
     showLoading();
-    
     db.collection('enrollments')
         .where('status', '==', 'pending')
         .get()
         .then(snapshot => {
             hideLoading();
-            
+
             console.log(`Found ${snapshot.size} pending enrollment requests`);
-            
-            if (enrollmentTableBody) {
-                enrollmentTableBody.innerHTML = '';
-                
-                if (snapshot.empty) {
-                    showAlert('Nu există cereri de înscriere în așteptare.', 'info');
-                    enrollmentTableBody.innerHTML = `
-                        <tr>
-                            <td colspan="8" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                                Nu există cereri de înscriere
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-                
-                snapshot.forEach(doc => {
-                    const enrollment = doc.data();
-                    enrollment.id = doc.id;
-                    appendEnrollmentRow(enrollment);
-                });
+
+            if (!enrollmentTableBody) {
+                console.warn('enrollmentTableBody not found');
+                return;
             }
+
+            enrollmentRequestsCache = [];
+
+            if (snapshot.empty) {
+                showAlert('Nu există cereri de înscriere în așteptare.', 'info');
+                enrollmentTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                            Nu există cereri de înscriere
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            snapshot.forEach(doc => {
+                const enrollment = doc.data();
+                enrollment.id = doc.id;
+                enrollmentRequestsCache.push(enrollment);
+            });
+
+            // Render table with current sort
+            renderEnrollmentTable();
         })
         .catch(error => {
             hideLoading();
@@ -1001,9 +1027,13 @@ function appendEnrollmentRow(enrollment) {
     const row = document.createElement('tr');
     row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700';
     
-    const formattedDate = enrollment.enrollmentDate ? 
-        new Date(enrollment.enrollmentDate.seconds * 1000).toLocaleDateString('ro-RO') : 
-        'N/A';
+    let formattedDate = 'N/A';
+    try {
+        const d = normalizeToDate(enrollment.enrollmentDate);
+        if (d) formattedDate = d.toLocaleDateString('ro-RO');
+    } catch (e) {
+        console.warn('Error formatting enrollment date', e);
+    }
     
     row.innerHTML = `
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">${enrollment.userName || 'N/A'}</td>
@@ -1070,6 +1100,82 @@ function updateEnrollmentStatus(enrollmentId, status) {
         showAlert(`Eroare la actualizarea cererii: ${error.message}`, 'error');
         console.error('Error updating enrollment:', error);
     });
+}
+
+// Render the enrollment table from cache, applying sort by enrollmentDate
+function renderEnrollmentTable() {
+    if (!enrollmentTableBody) return;
+
+    // Copy cache so we don't mutate original
+    const items = Array.from(enrollmentRequestsCache || []);
+
+    items.sort((a, b) => {
+        const da = normalizeToDate(a.enrollmentDate);
+        const db = normalizeToDate(b.enrollmentDate);
+
+        const ta = da ? da.getTime() : 0;
+        const tb = db ? db.getTime() : 0;
+
+        return enrollmentSortDesc ? tb - ta : ta - tb;
+    });
+
+    enrollmentTableBody.innerHTML = '';
+
+    items.forEach(item => appendEnrollmentRow(item));
+
+    // Update counts / alerts if needed
+    showAlert(`Găsite ${items.length} cereri în așteptare`, 'success');
+}
+
+function updateEnrollmentSortIcon() {
+    const icon = document.getElementById('enrollmentDateSortIcon');
+    if (!icon) return;
+    icon.textContent = enrollmentSortDesc ? '↓' : '↑';
+}
+
+// Export enrollment requests currently in cache to CSV (Excel-friendly)
+function exportEnrollmentCSV() {
+    if (!enrollmentRequestsCache || enrollmentRequestsCache.length === 0) {
+        showAlert('Nu există date de exportat.', 'info');
+        return;
+    }
+
+    const rows = [];
+    const headers = ['Nume', 'Email', 'Telefon', 'Curs', 'Data Cererii', 'Ocupație', 'Status', 'ID'];
+    rows.push(headers);
+
+    enrollmentRequestsCache.forEach(item => {
+        const d = normalizeToDate(item.enrollmentDate);
+        const dateStr = d ? d.toISOString() : '';
+
+        const row = [
+            item.userName || '',
+            item.email || '',
+            item.phone || '',
+            item.courseName || '',
+            dateStr,
+            item.occupation || '',
+            item.status || '',
+            item.id || ''
+        ];
+        rows.push(row);
+    });
+
+    // Convert to CSV string, escaping values
+    const csvContent = rows.map(r => r.map(field => `"${String(field).replace(/"/g, '""')}"`).join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const timestamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+    a.download = `enrollments_export_${timestamp}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showAlert('Exportul a fost generat. Descarcare în curs...', 'success');
 }
 
 // ========== COURSES SECTION ==========
