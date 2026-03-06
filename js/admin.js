@@ -59,38 +59,6 @@ let currentEventId = null;
 let isAdmin = false;
 let currentSection = 'course';
 let eventRegistrationsTableBody = null;
-// Cache & sorting for enrollment requests
-let enrollmentRequestsCache = [];
-let enrollmentSortDesc = true; // start with newest first
-
-// Helper: normalize a stored date (Firestore Timestamp, ISO string, number, Date)
-function normalizeToDate(value) {
-    if (!value) return null;
-    // Firestore Timestamp (compat) has toDate()
-    try {
-        if (typeof value.toDate === 'function') return value.toDate();
-    } catch (e) {}
-
-    // Firestore-like plain object with seconds
-    if (value && typeof value === 'object' && ('seconds' in value)) {
-        return new Date(value.seconds * 1000);
-    }
-
-    if (value instanceof Date) return value;
-
-    if (typeof value === 'string') {
-        const d = new Date(value);
-        if (!isNaN(d.getTime())) return d;
-    }
-
-    if (typeof value === 'number') {
-        // if looks like seconds (10 digits) convert to ms
-        if (value < 1e12) return new Date(value * 1000);
-        return new Date(value);
-    }
-
-    return null;
-}
 
 // Theme toggle functionality
 const setupThemeToggle = (toggleBtn, darkIcon, lightIcon) => {
@@ -209,6 +177,14 @@ function showSection(sectionName) {
                 case 'eventRegistrations':
                     console.log('Loading event registrations...');
                     loadEventRegistrations();
+                    break;
+                case 'clubs':
+                    console.log('Loading clubs...');
+                    loadClubs();
+                    break;
+                case 'clubRegistrations':
+                    console.log('Loading club registrations...');
+                    loadClubRegistrations();
                     break;
                 default:
                     console.warn(`Unknown section: ${sectionName}`);
@@ -332,16 +308,8 @@ function initializeAdmin() {
 function setupEventListeners() {
     if (addCourseBtn) addCourseBtn.addEventListener('click', showAddCourseModal);
     if (addEventBtn) addEventBtn.addEventListener('click', showAddEventModal);
-    
-    // Course and event modal close buttons
     if (closeModalBtn) closeModalBtn.addEventListener('click', hideModal);
-    const closeEventModalBtn = document.getElementById('closeEventModalBtn');
-    if (closeEventModalBtn) closeEventModalBtn.addEventListener('click', hideModal);
-    
     if (cancelBtn) cancelBtn.addEventListener('click', hideModal);
-    const cancelEventBtn = document.getElementById('cancelEventBtn');
-    if (cancelEventBtn) cancelEventBtn.addEventListener('click', hideModal);
-    
     if (courseForm) courseForm.addEventListener('submit', handleCourseFormSubmit);
     if (eventForm) eventForm.addEventListener('submit', handleEventFormSubmit);
     if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', hideDeleteModal);
@@ -349,6 +317,8 @@ function setupEventListeners() {
         confirmDeleteBtn.addEventListener('click', () => {
             if (currentSection === 'events') {
                 deleteEvent();
+            } else if (currentSection === 'clubs') {
+                deleteClub();
             } else {
                 deleteCourse();
             }
@@ -356,24 +326,6 @@ function setupEventListeners() {
     }
     if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
     if (logoutBtnMobile) logoutBtnMobile.addEventListener('click', handleLogout);
-
-    // Enrollment section: export and sorting
-    const exportEnrollmentBtn = document.getElementById('exportEnrollmentBtn');
-    const enrollmentDateHeader = document.getElementById('enrollmentDateHeader');
-
-    if (exportEnrollmentBtn) {
-        exportEnrollmentBtn.addEventListener('click', exportEnrollmentCSV);
-    }
-
-    if (enrollmentDateHeader) {
-        enrollmentDateHeader.addEventListener('click', () => {
-            enrollmentSortDesc = !enrollmentSortDesc;
-            updateEnrollmentSortIcon();
-            renderEnrollmentTable();
-        });
-    }
-    // Set initial icon state
-    updateEnrollmentSortIcon();
 }
 
 // ========== EVENT REGISTRATIONS SECTION ==========
@@ -984,41 +936,36 @@ function loadEnrollmentRequests() {
     
     console.log("Loading enrollment requests");
     showLoading();
+    
     db.collection('enrollments')
         .where('status', '==', 'pending')
         .get()
         .then(snapshot => {
             hideLoading();
-
+            
             console.log(`Found ${snapshot.size} pending enrollment requests`);
-
-            if (!enrollmentTableBody) {
-                console.warn('enrollmentTableBody not found');
-                return;
+            
+            if (enrollmentTableBody) {
+                enrollmentTableBody.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    showAlert('Nu există cereri de înscriere în așteptare.', 'info');
+                    enrollmentTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                Nu există cereri de înscriere
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const enrollment = doc.data();
+                    enrollment.id = doc.id;
+                    appendEnrollmentRow(enrollment);
+                });
             }
-
-            enrollmentRequestsCache = [];
-
-            if (snapshot.empty) {
-                showAlert('Nu există cereri de înscriere în așteptare.', 'info');
-                enrollmentTableBody.innerHTML = `
-                    <tr>
-                        <td colspan="8" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                            Nu există cereri de înscriere
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            snapshot.forEach(doc => {
-                const enrollment = doc.data();
-                enrollment.id = doc.id;
-                enrollmentRequestsCache.push(enrollment);
-            });
-
-            // Render table with current sort
-            renderEnrollmentTable();
         })
         .catch(error => {
             hideLoading();
@@ -1035,13 +982,9 @@ function appendEnrollmentRow(enrollment) {
     const row = document.createElement('tr');
     row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700';
     
-    let formattedDate = 'N/A';
-    try {
-        const d = normalizeToDate(enrollment.enrollmentDate);
-        if (d) formattedDate = d.toLocaleDateString('ro-RO');
-    } catch (e) {
-        console.warn('Error formatting enrollment date', e);
-    }
+    const formattedDate = enrollment.enrollmentDate ? 
+        new Date(enrollment.enrollmentDate.seconds * 1000).toLocaleDateString('ro-RO') : 
+        'N/A';
     
     row.innerHTML = `
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">${enrollment.userName || 'N/A'}</td>
@@ -1108,82 +1051,6 @@ function updateEnrollmentStatus(enrollmentId, status) {
         showAlert(`Eroare la actualizarea cererii: ${error.message}`, 'error');
         console.error('Error updating enrollment:', error);
     });
-}
-
-// Render the enrollment table from cache, applying sort by enrollmentDate
-function renderEnrollmentTable() {
-    if (!enrollmentTableBody) return;
-
-    // Copy cache so we don't mutate original
-    const items = Array.from(enrollmentRequestsCache || []);
-
-    items.sort((a, b) => {
-        const da = normalizeToDate(a.enrollmentDate);
-        const db = normalizeToDate(b.enrollmentDate);
-
-        const ta = da ? da.getTime() : 0;
-        const tb = db ? db.getTime() : 0;
-
-        return enrollmentSortDesc ? tb - ta : ta - tb;
-    });
-
-    enrollmentTableBody.innerHTML = '';
-
-    items.forEach(item => appendEnrollmentRow(item));
-
-    // Update counts / alerts if needed
-    showAlert(`Găsite ${items.length} cereri în așteptare`, 'success');
-}
-
-function updateEnrollmentSortIcon() {
-    const icon = document.getElementById('enrollmentDateSortIcon');
-    if (!icon) return;
-    icon.textContent = enrollmentSortDesc ? '↓' : '↑';
-}
-
-// Export enrollment requests currently in cache to CSV (Excel-friendly)
-function exportEnrollmentCSV() {
-    if (!enrollmentRequestsCache || enrollmentRequestsCache.length === 0) {
-        showAlert('Nu există date de exportat.', 'info');
-        return;
-    }
-
-    const rows = [];
-    const headers = ['Nume', 'Email', 'Telefon', 'Curs', 'Data Cererii', 'Ocupație', 'Status', 'ID'];
-    rows.push(headers);
-
-    enrollmentRequestsCache.forEach(item => {
-        const d = normalizeToDate(item.enrollmentDate);
-        const dateStr = d ? d.toISOString() : '';
-
-        const row = [
-            item.userName || '',
-            item.email || '',
-            item.phone || '',
-            item.courseName || '',
-            dateStr,
-            item.occupation || '',
-            item.status || '',
-            item.id || ''
-        ];
-        rows.push(row);
-    });
-
-    // Convert to CSV string, escaping values
-    const csvContent = rows.map(r => r.map(field => `"${String(field).replace(/"/g, '""')}"`).join(',')).join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    const timestamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
-    a.download = `enrollments_export_${timestamp}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    showAlert('Exportul a fost generat. Descarcare în curs...', 'success');
 }
 
 // ========== COURSES SECTION ==========
@@ -1564,10 +1431,8 @@ function appendEventRow(event) {
         row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700';
     }
     
-    const sd = normalizeToDate(event.startDate);
-    const ed = normalizeToDate(event.endDate);
-    const startDate = sd ? sd.toLocaleDateString('ro-RO') : 'N/A';
-    const status = getEventStatus(sd, ed);
+    const startDate = event.startDate ? new Date(event.startDate).toLocaleDateString('ro-RO') : 'N/A';
+    const status = getEventStatus(event.startDate, event.endDate);
     const statusBadge = getEventStatusBadge(status);
     
     row.innerHTML = `
@@ -1627,12 +1492,11 @@ function appendEventRow(event) {
 
 function getEventStatus(startDate, endDate) {
     const now = new Date();
-    const start = normalizeToDate(startDate);
-    const end = normalizeToDate(endDate) || start;
-
-    if (!start) return 'upcoming';
+    const start = new Date(startDate);
+    const end = new Date(endDate || startDate);
+    
     if (now < start) return 'upcoming';
-    if (now >= start && end && now <= end) return 'ongoing';
+    if (now >= start && now <= end) return 'ongoing';
     return 'past';
 }
 
@@ -1703,6 +1567,8 @@ function initEventModal() {
     console.log("Initializing event modal");
     
     const modal = document.getElementById('eventModal');
+    const closeBtn = document.getElementById('closeEventModalBtn');
+    const cancelBtn = document.getElementById('cancelEventBtn');
     const form = document.getElementById('eventForm');
     
     if (!modal || !form) {
@@ -1710,14 +1576,44 @@ function initEventModal() {
         return null;
     }
     
-    console.log("Event modal initialized");
+    const modalClone = modal.cloneNode(true);
+    modal.parentNode.replaceChild(modalClone, modal);
+    
+    const newCloseBtn = modalClone.querySelector('#closeEventModalBtn');
+    const newCancelBtn = modalClone.querySelector('#cancelEventBtn');
+    const newForm = modalClone.querySelector('#eventForm');
+    
+    newCloseBtn.onclick = function() {
+        console.log("Close button clicked");
+        modalClone.classList.add('hidden');
+    };
+    
+    newCancelBtn.onclick = function() {
+        console.log("Cancel button clicked");
+        modalClone.classList.add('hidden');
+    };
+    
+    newForm.onsubmit = function(e) {
+        e.preventDefault();
+        console.log("Form submitted");
+        handleEventFormSubmit(e);
+    };
+    
+    modalClone.onclick = function(e) {
+        if (e.target === modalClone) {
+            console.log("Clicked outside modal");
+            modalClone.classList.add('hidden');
+        }
+    };
+    
+    console.log("Event modal initialized with proper event handlers");
     
     return {
-        modal: modal,
-        form: form,
-        titleElement: modal.querySelector('#eventModalTitle'),
-        idField: modal.querySelector('#eventIdField'),
-        idInput: modal.querySelector('#eventId')
+        modal: modalClone,
+        form: newForm,
+        titleElement: modalClone.querySelector('#eventModalTitle'),
+        idField: modalClone.querySelector('#eventIdField'),
+        idInput: modalClone.querySelector('#eventId')
     };
 }
 
@@ -1749,39 +1645,7 @@ function handleEventFormSubmit(event) {
     
     for (let [key, value] of formData.entries()) {
         if (key === 'startDate' || key === 'endDate') {
-            // value comes from <input type="datetime-local"> in format: YYYY-MM-DDTHH:MM
-            if (value) {
-                const m = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/);
-                let parsedDate = null;
-                if (m) {
-                    const year = parseInt(m[1], 10);
-                    const month = parseInt(m[2], 10) - 1; // JS months 0-based
-                    const day = parseInt(m[3], 10);
-                    const hour = parseInt(m[4], 10);
-                    const minute = parseInt(m[5], 10);
-                    const second = m[6] ? parseInt(m[6], 10) : 0;
-                    parsedDate = new Date(year, month, day, hour, minute, second);
-                } else {
-                    // fallback to Date constructor
-                    parsedDate = new Date(value);
-                }
-
-                if (isNaN(parsedDate.getTime())) {
-                    console.warn('Could not parse date value for', key, value);
-                    eventData[key] = null;
-                } else {
-                    // store as Firestore Timestamp so it works natively in Firebase
-                    try {
-                        eventData[key] = firebase.firestore.Timestamp.fromDate(parsedDate);
-                    } catch (err) {
-                        // Fallback to ISO string if Timestamp API not available for some reason
-                        console.warn('Could not create Firestore Timestamp, falling back to ISO string', err);
-                        eventData[key] = parsedDate.toISOString();
-                    }
-                }
-            } else {
-                eventData[key] = null;
-            }
+            eventData[key] = new Date(value);
         } else if (key === 'availableSpots') {
             eventData[key] = parseInt(value) || 0;
         } else {
@@ -1936,8 +1800,8 @@ function fillFormWithEventData(event, formElement = null) {
     if (event.startDate) {
         const startDateElement = form.querySelector('#eventStartDate');
         if (startDateElement) {
-            const startDate = normalizeToDate(event.startDate);
-            startDateElement.value = startDate ? startDate.toISOString().slice(0, 16) : '';
+            const startDate = new Date(event.startDate);
+            startDateElement.value = startDate.toISOString().slice(0, 16);
             console.log(`Set startDate = ${startDateElement.value}`);
         }
     }
@@ -1945,8 +1809,8 @@ function fillFormWithEventData(event, formElement = null) {
     if (event.endDate) {
         const endDateElement = form.querySelector('#eventEndDate');
         if (endDateElement) {
-            const endDate = normalizeToDate(event.endDate);
-            endDateElement.value = endDate ? endDate.toISOString().slice(0, 16) : '';
+            const endDate = new Date(event.endDate);
+            endDateElement.value = endDate.toISOString().slice(0, 16);
             console.log(`Set endDate = ${endDateElement.value}`);
         }
     }
@@ -2065,6 +1929,445 @@ function showAlert(message, type) {
     setTimeout(() => {
         if (alertBox) alertBox.classList.add('hidden');
     }, 5000);
+}
+
+// ========== CLUBS SECTION ==========
+
+let currentClubId = null;
+
+async function createDefaultClubs() {
+    console.log("Creating default clubs...");
+    const defaultClubs = [
+        { name: "CLUBUL FORMATORILOR CMIEA", description: "Club dedicat formatorilor CMIEA, pentru dezvoltarea competențelor de formare și schimb de experiență.", schedule: "Miercuri, o dată în lună, 18.00-20.00", image: "", image2: "", image3: "", image4: "" },
+        { name: "CLUBUL SENIORILOR", description: "Un spațiu dedicat seniorilor pentru socializare, activități culturale și dezvoltare personală.", schedule: "Miercuri, de două ori pe lună, 12.00-14.00", image: "", image2: "", image3: "", image4: "" },
+        { name: "CLUBUL CREART", description: "Club de artă creativă pentru exprimarea talentului artistic și dezvoltarea abilităților creative.", schedule: "Săptămânal, prima miercuri din lună - 11.00-13.00, următoarele 17.30-20.30", image: "", image2: "", image3: "", image4: "" },
+        { name: "CLUBUL TAȚILOR", description: "Club dedicat taților activi, pentru schimb de experiență și dezvoltarea abilităților parentale.", schedule: "Sâmbătă, o dată în lună, 09.00-11.00", image: "", image2: "", image3: "", image4: "" },
+        { name: "CLUBUL DE SĂNĂTATE", description: "Club pentru promovarea unui stil de viață sănătos, informare și activități de wellness.", schedule: "Marți, o dată în lună, 18.00-20.00", image: "", image2: "", image3: "", image4: "" },
+        { name: "CLUBUL PSIHOLOGULUI", description: "Sesiuni interactive cu psihologi profesioniști pentru dezvoltare personală și bunăstare emoțională.", schedule: "Joi, o dată în lună, 18.00-20.00", image: "", image2: "", image3: "", image4: "" },
+        { name: "CLUBUL DE LEADERSHIP TRANSFORMAȚIONAL", description: "Dezvoltarea competențelor de leadership și transformare personală și profesională.", schedule: "Marți, o dată în lună, 18.00-20.00", image: "", image2: "", image3: "", image4: "" },
+        { name: "CLUBUL DE DESIGN VESTIMENTAR", description: "Club creativ pentru cei pasionați de design vestimentar, croitorie și modă.", schedule: "Marți, o dată în lună, 18.00-20.00", image: "", image2: "", image3: "", image4: "" },
+        { name: "CLUBUL DE TEHNOLOGIE ȘI INOVAȚIE", description: "Explorarea noilor tehnologii, tendințe digitale și inovații pentru dezvoltare profesională.", schedule: "Miercuri, o dată în lună, 18.00-20.00", image: "", image2: "", image3: "", image4: "" },
+        { name: "CLUBUL DE NUTRIȚIE SĂNĂTOASĂ", description: "Informare și activități practice despre alimentația sănătoasă și echilibrată.", schedule: "Marți, o dată în lună, 18.00-20.00", image: "", image2: "", image3: "", image4: "" }
+    ];
+    for (const club of defaultClubs) {
+        await db.collection('clubs').add({ ...club, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    }
+    console.log("Default clubs created successfully");
+}
+
+function loadClubs() {
+    if (!isAdmin) return;
+
+    console.log("Loading clubs");
+    showLoading();
+
+    db.collection('clubs').orderBy('createdAt', 'desc').get()
+        .then(async snapshot => {
+            hideLoading();
+            const clubsTableBody = document.getElementById('clubsTableBody');
+            if (clubsTableBody) {
+                clubsTableBody.innerHTML = '';
+            }
+
+            console.log(`Found ${snapshot.size} clubs`);
+
+            if (snapshot.empty) {
+                showAlert('Se creează cluburile implicite...', 'info');
+                try {
+                    await createDefaultClubs();
+                    loadClubs();
+                } catch (error) {
+                    console.error('Error creating default clubs:', error);
+                    showAlert('Eroare la crearea cluburilor implicite: ' + error.message, 'error');
+                }
+                return;
+            }
+
+            snapshot.forEach(doc => {
+                const club = doc.data();
+                club.id = doc.id;
+                if (!club.deleted) {
+                    appendClubRow(club);
+                }
+            });
+        })
+        .catch(error => {
+            hideLoading();
+            showAlert(`Eroare la încărcarea cluburilor: ${error.message}`, 'error');
+            console.error('Error fetching clubs:', error);
+        });
+}
+
+function appendClubRow(club) {
+    const clubsTableBody = document.getElementById('clubsTableBody');
+    if (!clubsTableBody) return;
+
+    const row = document.createElement('tr');
+    row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700';
+
+    row.innerHTML = `
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${club.name || ''}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${club.schedule || ''}</td>
+        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">${club.description || ''}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <div class="flex space-x-3">
+                <button class="text-main dark:text-maindark hover:text-indigo-900 edit-club-btn" data-id="${club.id}" title="Editează">
+                    <i class="ph-fill ph-pencil-simple text-main dark:text-maindark"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-900 delete-club-btn" data-id="${club.id}" title="Șterge">
+                    <i class="ph-fill ph-trash"></i>
+                </button>
+            </div>
+        </td>
+    `;
+
+    clubsTableBody.appendChild(row);
+
+    const editBtn = row.querySelector('.edit-club-btn');
+    const deleteBtn = row.querySelector('.delete-club-btn');
+
+    if (editBtn) {
+        editBtn.addEventListener('click', () => showEditClubModal(club.id));
+    }
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => showDeleteClubConfirmation(club.id));
+    }
+}
+
+function showAddClubModal() {
+    console.log("Showing add club modal");
+    const modal = document.getElementById('clubModal');
+    const form = document.getElementById('clubForm');
+    const title = document.getElementById('clubModalTitle');
+    const idField = document.getElementById('clubIdField');
+
+    if (form) form.reset();
+    if (title) title.textContent = 'Adaugă Club Nou';
+    if (idField) idField.classList.add('hidden');
+    currentClubId = null;
+
+    if (modal) modal.classList.remove('hidden');
+}
+
+function showEditClubModal(clubId) {
+    if (!isAdmin) return;
+
+    console.log(`Editing club: ${clubId}`);
+    showLoading();
+
+    db.collection('clubs').doc(clubId).get()
+        .then(doc => {
+            hideLoading();
+            if (!doc.exists) {
+                showAlert('Clubul nu a fost găsit!', 'error');
+                return;
+            }
+
+            const club = doc.data();
+            const modal = document.getElementById('clubModal');
+            const title = document.getElementById('clubModalTitle');
+            const idField = document.getElementById('clubIdField');
+
+            if (title) title.textContent = 'Editează Club';
+            if (idField) idField.classList.remove('hidden');
+
+            document.getElementById('clubId').value = clubId;
+            document.getElementById('clubName').value = club.name || '';
+            document.getElementById('clubDescription').value = club.description || '';
+            document.getElementById('clubSchedule').value = club.schedule || '';
+            document.getElementById('clubImage').value = club.image || '';
+            document.getElementById('clubImage2').value = club.image2 || '';
+            document.getElementById('clubImage3').value = club.image3 || '';
+            document.getElementById('clubImage4').value = club.image4 || '';
+
+            currentClubId = clubId;
+            if (modal) modal.classList.remove('hidden');
+        })
+        .catch(error => {
+            hideLoading();
+            showAlert(`Eroare: ${error.message}`, 'error');
+        });
+}
+
+function handleClubFormSubmit(event) {
+    event.preventDefault();
+    if (!isAdmin) return;
+
+    const form = document.getElementById('clubForm');
+    const formData = new FormData(form);
+
+    const clubData = {
+        name: formData.get('name'),
+        description: formData.get('description'),
+        schedule: formData.get('schedule'),
+        image: formData.get('image') || '',
+        image2: formData.get('image2') || '',
+        image3: formData.get('image3') || '',
+        image4: formData.get('image4') || '',
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    if (!currentClubId) {
+        clubData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+    }
+
+    showLoading();
+
+    const promise = currentClubId ?
+        db.collection('clubs').doc(currentClubId).update(clubData) :
+        db.collection('clubs').add(clubData);
+
+    promise
+        .then(() => {
+            hideLoading();
+            document.getElementById('clubModal').classList.add('hidden');
+            showAlert(`Clubul a fost ${currentClubId ? 'actualizat' : 'adăugat'} cu succes!`, 'success');
+            loadClubs();
+        })
+        .catch(error => {
+            hideLoading();
+            showAlert(`Eroare: ${error.message}`, 'error');
+        });
+}
+
+function showDeleteClubConfirmation(clubId) {
+    if (!isAdmin) return;
+    currentClubId = clubId;
+    currentSection = 'clubs';
+    if (deleteModal) deleteModal.classList.remove('hidden');
+}
+
+function deleteClub() {
+    if (!currentClubId) return;
+
+    showLoading();
+    hideDeleteModal();
+
+    db.collection('clubs').doc(currentClubId).delete()
+        .then(() => {
+            hideLoading();
+            showAlert('Clubul a fost șters cu succes!', 'success');
+            loadClubs();
+        })
+        .catch(error => {
+            hideLoading();
+            if (error.code === "permission-denied") {
+                db.collection('clubs').doc(currentClubId).update({
+                    deleted: true,
+                    deletedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    showAlert('Clubul a fost marcat ca șters!', 'success');
+                    loadClubs();
+                }).catch(err => {
+                    showAlert(`Eroare: ${err.message}`, 'error');
+                });
+            } else {
+                showAlert(`Eroare: ${error.message}`, 'error');
+            }
+        });
+}
+
+// ========== CLUB REGISTRATIONS SECTION ==========
+
+function loadClubRegistrations() {
+    if (!isAdmin) return;
+
+    console.log("Loading club registrations");
+    showLoading();
+
+    const tableBody = document.getElementById('clubRegistrationsTableBody');
+    if (!tableBody) {
+        hideLoading();
+        console.error('Club registrations table body not found');
+        return;
+    }
+
+    db.collection('clubRegistrations').get()
+        .then(snapshot => {
+            hideLoading();
+            tableBody.innerHTML = '';
+
+            console.log(`Found ${snapshot.size} club registrations`);
+
+            if (snapshot.empty) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                            Nu există cereri de înregistrare la cluburi
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let pendingCount = 0;
+            snapshot.forEach(doc => {
+                const reg = doc.data();
+                reg.id = doc.id;
+                if (reg.status === 'pending') {
+                    pendingCount++;
+                    appendClubRegistrationRow(reg, tableBody);
+                }
+            });
+
+            if (pendingCount === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                            Nu există cereri de înregistrare în așteptare
+                        </td>
+                    </tr>
+                `;
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            showAlert(`Eroare: ${error.message}`, 'error');
+            console.error('Error fetching club registrations:', error);
+        });
+}
+
+function appendClubRegistrationRow(reg, tableBody) {
+    const row = document.createElement('tr');
+    row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700';
+
+    let formattedDate = 'N/A';
+    try {
+        if (reg.registrationDate && reg.registrationDate.seconds) {
+            formattedDate = new Date(reg.registrationDate.seconds * 1000).toLocaleDateString('ro-RO');
+        }
+    } catch (e) {
+        formattedDate = 'N/A';
+    }
+
+    const clubsList = Array.isArray(reg.cluburiSelectate) ? reg.cluburiSelectate.join(', ') : (reg.clubName || 'N/A');
+
+    row.innerHTML = `
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">${reg.numePrenume || 'N/A'}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">${reg.email || 'N/A'}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">${reg.telefon || 'N/A'}</td>
+        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate" title="${clubsList}">${clubsList}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${formattedDate}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100">
+                În așteptare
+            </span>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <div class="flex space-x-3">
+                <button class="text-main dark:text-maindark hover:text-indigo-900 view-club-reg-btn" data-id="${reg.id}" title="Vezi detalii">
+                    <i class="ph ph-eye"></i>
+                </button>
+                <button class="text-green-600 hover:text-green-900 approve-club-reg-btn" data-id="${reg.id}" title="Aprobă">
+                    <i class="ph-bold ph-check"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-900 reject-club-reg-btn" data-id="${reg.id}" title="Respinge">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+        </td>
+    `;
+
+    tableBody.appendChild(row);
+
+    row.querySelector('.view-club-reg-btn')?.addEventListener('click', () => viewClubRegistrationDetails(reg));
+    row.querySelector('.approve-club-reg-btn')?.addEventListener('click', () => updateClubRegistrationStatus(reg.id, 'approved'));
+    row.querySelector('.reject-club-reg-btn')?.addEventListener('click', () => updateClubRegistrationStatus(reg.id, 'rejected'));
+}
+
+function viewClubRegistrationDetails(reg) {
+    const modal = document.getElementById('clubRegDetailModal');
+    const content = document.getElementById('clubRegDetailContent');
+    if (!modal || !content) return;
+
+    const clubsList = Array.isArray(reg.cluburiSelectate) ? reg.cluburiSelectate.join(', ') : (reg.clubName || 'N/A');
+
+    content.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 mb-3">
+                    <i class="ph ph-user-circle mr-2"></i>Informații Personale
+                </h4>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Nume, Prenume</p>
+                        <p class="font-medium text-gray-900 dark:text-white">${reg.numePrenume || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Email</p>
+                        <p class="font-medium text-gray-900 dark:text-white">${reg.email || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Telefon</p>
+                        <p class="font-medium text-gray-900 dark:text-white">${reg.telefon || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Anul nașterii</p>
+                        <p class="font-medium text-gray-900 dark:text-white">${reg.anulNasterii || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Ocupația</p>
+                        <p class="font-medium text-gray-900 dark:text-white">${reg.ocupatia || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Studii</p>
+                        <p class="font-medium text-gray-900 dark:text-white">${reg.studii || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Profesia actuală</p>
+                        <p class="font-medium text-gray-900 dark:text-white">${reg.profesiaActuala || 'N/A'}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 mb-3">
+                    <i class="ph ph-users-three mr-2"></i>Cluburi & Așteptări
+                </h4>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Cluburi selectate</p>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            ${(Array.isArray(reg.cluburiSelectate) ? reg.cluburiSelectate : [reg.clubName || 'N/A']).map(c =>
+                                `<span class="px-2 py-1 bg-main/10 text-main dark:bg-maindark/20 dark:text-maindark rounded-full text-xs font-medium">${c}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Așteptări</p>
+                        <p class="font-medium text-gray-900 dark:text-white">${reg.asteptari || 'Nicio așteptare specificată'}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    modal.classList.remove('hidden');
+
+    document.getElementById('closeClubRegDetailBtn')?.addEventListener('click', () => modal.classList.add('hidden'));
+    document.getElementById('closeClubRegDetailBtn2')?.addEventListener('click', () => modal.classList.add('hidden'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
+}
+
+function updateClubRegistrationStatus(regId, status) {
+    if (!isAdmin) return;
+
+    showLoading();
+
+    db.collection('clubRegistrations').doc(regId).update({
+        status: status,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedBy: auth.currentUser?.uid || 'unknown'
+    })
+    .then(() => {
+        hideLoading();
+        const actionText = status === 'approved' ? 'aprobată' : 'respinsă';
+        showAlert(`Cererea a fost ${actionText} cu succes!`, 'success');
+        setTimeout(() => loadClubRegistrations(), 1000);
+    })
+    .catch(error => {
+        hideLoading();
+        showAlert(`Eroare: ${error.message}`, 'error');
+    });
 }
 
 // ========== DEBUGGING HELPERS ==========
@@ -2265,19 +2568,45 @@ function showAddEventModal() {
 // Direct event listener for Add Event button
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Setting up event listeners directly");
-    
+
     // Get the Add Event button
     const addEventButton = document.getElementById('addEventBtn');
     if (addEventButton) {
         console.log("Found Add Event button, attaching click listener");
-        
-        // Add direct click listener
         addEventButton.onclick = function(e) {
             e.preventDefault();
             console.log("Add Event button clicked");
             showAddEventModal();
         };
-    } else {
-        console.error("Add Event button not found on page load");
+    }
+
+    // Club buttons
+    const addClubButton = document.getElementById('addClubBtn');
+    if (addClubButton) {
+        addClubButton.onclick = function(e) {
+            e.preventDefault();
+            showAddClubModal();
+        };
+    }
+
+    const clubForm = document.getElementById('clubForm');
+    if (clubForm) {
+        clubForm.onsubmit = function(e) {
+            handleClubFormSubmit(e);
+        };
+    }
+
+    const closeClubModalBtn = document.getElementById('closeClubModalBtn');
+    if (closeClubModalBtn) {
+        closeClubModalBtn.onclick = function() {
+            document.getElementById('clubModal').classList.add('hidden');
+        };
+    }
+
+    const cancelClubBtn = document.getElementById('cancelClubBtn');
+    if (cancelClubBtn) {
+        cancelClubBtn.onclick = function() {
+            document.getElementById('clubModal').classList.add('hidden');
+        };
     }
 });

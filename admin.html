@@ -55,6 +55,8 @@
                     <li><a href="#" data-section="users">Useri</a></li>
                     <li><a href="#" data-section="events">Evenimente</a></li>
                     <li><a href="#" data-section="eventRegistrations">Înregistrări Evenimente</a></li>
+                    <li><a href="#" data-section="clubs">Cluburi</a></li>
+                    <li><a href="#" data-section="clubRegistrations">Înregistrări Cluburi</a></li>
                 </ul>
             </div>
             <div class="font-medium gap-6 hidden lg:flex items-center">
@@ -87,6 +89,8 @@
             <a href="#" data-section="users">Useri</a>
             <a href="#" data-section="events">Evenimente</a>
             <a href="#" data-section="eventRegistrations">Înregistrări Evenimente</a>
+            <a href="#" data-section="clubs">Cluburi</a>
+            <a href="#" data-section="clubRegistrations">Înregistrări Cluburi</a>
             <hr class="border-black my-6 w-3/4 ml-auto dark:border-white">
             <div class="flex gap-1 text-end flex-col text-2xl w-3/4">
                 <button id="logout-btn-mobile" class="p-2 text-main dark:text-white border border-main dark:border-white rounded-xl dark:hover:bg-gray-100/10 hover:bg-black/10">Logout</button>
@@ -122,6 +126,12 @@
                         </a>
                         <a href="#" data-section="eventRegistrations" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                             Înregistrări Evenimente
+                        </a>
+                        <a href="#" data-section="clubs" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Cluburi
+                        </a>
+                        <a href="#" data-section="clubRegistrations" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Înregistrări Cluburi
                         </a>
                     </div>
                 </div>
@@ -171,13 +181,8 @@
         <!-- Enrollment Requests Section -->
         <div id="enrollmentSection" class="admin-section bg-white dark:bg-dark2 shadow-lg rounded-xl p-6 hidden">
             <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Admin Panel - Cereri de Înscriere</h1>
-                    <div class="flex items-center gap-3">
-                        <button id="exportEnrollmentBtn" class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white px-4 py-2 rounded-lg flex items-center hover:bg-gray-300 dark:hover:bg-gray-600">
-                            <i class="ph ph-file-xls mr-2"></i> Export to Excel
-                        </button>
-                    </div>
-                </div>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Admin Panel - Cereri de Înscriere</h1>
+            </div>
 
             <!-- Enrollment Table -->
             <div class="overflow-x-auto">
@@ -188,7 +193,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Telefon</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Curs</th>
-                            <th id="enrollmentDateHeader" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer select-none">Data Cererii <span id="enrollmentDateSortIcon" class="ml-2 text-xs">↕</span></th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data Cererii</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ocupație</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Acțiuni</th>
@@ -300,19 +305,162 @@
         </div>
     </div>
 
+        <!-- Clubs Section -->
+        <div id="clubsSection" class="admin-section bg-white dark:bg-dark2 shadow-lg rounded-xl p-6 hidden">
+            <div class="flex flex-col items-start lg:flex-row gap-4 lg:gap-0 justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Admin Panel - Gestionare Cluburi</h1>
+                <button id="addClubBtn" class="bg-main hover:bg-maindark dark:bg-maindark text-white px-4 py-2 rounded-lg flex items-center">
+                    <i class="ph ph-plus mr-2"></i> Adaugă Club Nou
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-white dark:bg-dark3">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nume</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Program</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Descriere</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Acțiuni</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clubsTableBody" class="bg-white dark:bg-dark2 divide-y divide-gray-200 dark:divide-gray-700">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Club Registrations Section -->
+        <div id="clubRegistrationsSection" class="admin-section bg-white dark:bg-dark2 shadow-lg rounded-xl p-6 hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Admin Panel - Cereri de Înregistrare la Cluburi</h1>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-white dark:bg-dark3">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nume</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Telefon</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Cluburi Selectate</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data Cererii</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Acțiuni</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clubRegistrationsTableBody" class="bg-white dark:bg-dark2 divide-y divide-gray-200 dark:divide-gray-700">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Club Modal -->
+    <div id="clubModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white dark:bg-dark2 rounded-lg shadow-lg w-full max-w-3xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <h3 id="clubModalTitle" class="text-xl font-semibold text-gray-700 dark:text-white">Adaugă Club Nou</h3>
+                <button id="closeClubModalBtn" class="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200">
+                    <i class="ph ph-x text-xl"></i>
+                </button>
+            </div>
+            <div class="px-6 py-4">
+                <form id="clubForm" class="space-y-4">
+                    <div id="clubIdField" class="hidden">
+                        <label for="clubId" class="block text-sm font-medium text-gray-700 dark:text-gray-300">ID</label>
+                        <input type="text" id="clubId" name="id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" readonly>
+                    </div>
+
+                    <div>
+                        <label for="clubName" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Numele Clubului</label>
+                        <input type="text" id="clubName" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                    </div>
+
+                    <div>
+                        <label for="clubDescription" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descriere</label>
+                        <textarea id="clubDescription" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" required></textarea>
+                    </div>
+
+                    <div>
+                        <label for="clubSchedule" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Program</label>
+                        <input type="text" id="clubSchedule" name="schedule" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="ex: Miercuri, o dată în lună, 18.00-20.00" required>
+                    </div>
+
+                    <div>
+                        <label for="clubImage" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL Imagine Principală (opțional)</label>
+                        <input type="url" id="clubImage" name="image" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Imaginea mare de prezentare">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Galerie Foto (opțional) - 3 imagini mici</label>
+                        <div class="space-y-2">
+                            <input type="url" id="clubImage2" name="image2" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="URL Imagine galerie 1">
+                            <input type="url" id="clubImage3" name="image3" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="URL Imagine galerie 2">
+                            <input type="url" id="clubImage4" name="image4" class="block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="URL Imagine galerie 3">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <button type="button" id="cancelClubBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                            Anulează
+                        </button>
+                        <button type="submit" id="saveClubBtn" class="px-4 py-2 bg-main dark:bg-maindark text-white rounded-md hover:bg-maindark dark:hover:bg-maindark">
+                            Salvează
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Club Registration Detail Modal -->
+    <div id="clubRegDetailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white dark:bg-dark2 rounded-lg shadow-lg w-full max-w-3xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <h3 class="text-xl font-semibold text-gray-700 dark:text-white">Detalii Înregistrare Club</h3>
+                <button id="closeClubRegDetailBtn" class="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200">
+                    <i class="ph ph-x text-xl"></i>
+                </button>
+            </div>
+            <div id="clubRegDetailContent" class="p-6">
+            </div>
+            <div class="px-6 py-3 bg-gray-50 dark:bg-gray-800 flex justify-end space-x-3 rounded-b-lg">
+                <button id="closeClubRegDetailBtn2" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                    Închide
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Add/Edit Course Modal -->
     <div id="courseModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white dark:bg-dark2 rounded-lg shadow-lg w-full max-w-4xl max-h-screen overflow-y-auto">
             <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 px-6 py-4">
                 <h3 id="modalTitle" class="text-xl font-semibold text-gray-700 dark:text-white">Adaugă Curs Nou</h3>
-                <button type="button" id="closeModalBtn" class="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200">
+                <button id="closeModalBtn" class="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200">
                     <i class="ph ph-x text-xl"></i>
                 </button>
             </div>
             <div class="px-6 py-4">
+                 <div class="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center p-4">
+        <!-- Modal Content -->
+        <div class="bg-white dark:bg-dark rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">Adaugă un Curs Nou</h2>
+                <button type="button" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl">
+                    ×
+                </button>
+            </div>
+
             <!-- Modal Body -->
-            <form id="courseForm" class="space-y-6">
-                
+            <form id="courseForm" class="p-6">
+                <!-- ID field (hidden) -->
+                <div id="idField" class="hidden">
+                    <input type="text" id="courseId" name="id" readonly>
+                </div>
+
                 <!-- Title and Image URL -->
                 <div class="space-y-6">
                     <!-- Title -->
@@ -502,21 +650,20 @@
                             </div>
                         </div>
                     </div>
-            </div>
+                </div>
 
-            <!-- Action Buttons -->
-            <div class="flex justify-end gap-3 mt-8 px-6 pb-6">
-                <button type="button" id="cancelBtn" 
-                        class="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-white dark:bg-dark2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
-                    Anulează
-                </button>
-                <button type="submit" id="saveBtn"
-                        class="px-6 py-2.5 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                    Salvează
-                </button>
-            </div>
+                <!-- Action Buttons -->
+                <div class="flex justify-end gap-3 mt-8">
+                    <button type="button" id="cancelBtn" 
+                            class="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-white dark:bg-dark2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                        Anulează
+                    </button>
+                    <button type="submit" id="saveBtn"
+                            class="px-6 py-2.5 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                        Salvează
+                    </button>
+                </div>
             </form>
-            </div>
         </div>
     </div>
 
@@ -587,108 +734,97 @@
         </div>
     </div>
 
-    <!-- Add/Edit Event Modal (styled like Course modal) -->
+    <!-- Add/Edit Event Modal -->
     <div id="eventModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white dark:bg-dark2 rounded-lg shadow-lg w-full max-w-4xl max-h-screen overflow-y-auto">
+        <div class="bg-white dark:bg-dark2 rounded-lg shadow-lg w-full max-w-3xl max-h-screen overflow-y-auto">
             <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 px-6 py-4">
                 <h3 id="eventModalTitle" class="text-xl font-semibold text-gray-700 dark:text-white">Adaugă Eveniment Nou</h3>
-                <button type="button" id="closeEventModalBtn" class="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200">
+                <button id="closeEventModalBtn" class="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200">
                     <i class="ph ph-x text-xl"></i>
                 </button>
             </div>
             <div class="px-6 py-4">
-                <form id="eventForm" class="space-y-6">
-                    <!-- Hidden ID field for editing -->
-                    <div id="eventIdField" class="hidden">
-                        <input type="hidden" id="eventId" name="id" value="">
-                    </div>
+                <form id="eventForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- ID field (hidden for new events, shown for edit) -->
+                        <div id="eventIdField" class="col-span-1 hidden">
+                            <label for="eventId" class="block text-sm font-medium text-gray-700 dark:text-gray-300">ID</label>
+                            <input type="text" id="eventId" name="id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" readonly>
+                        </div>
 
-                    <div class="space-y-6">
-                                <div>
-                                    <label for="eventTitle" class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Titlu Eveniment</label>
-                                    <input type="text" id="eventTitle" name="title" placeholder="Titlu eveniment" required
-                                           class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-dark2 dark:text-white placeholder-gray-400">
-                                </div>
-
-                                <div>
-                                    <label for="eventDescription" class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Descriere</label>
-                                    <textarea id="eventDescription" name="description" rows="4" placeholder="Descriere eveniment"
-                                              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-dark2 dark:text-white placeholder-gray-400" required></textarea>
-                                </div>
-
-                                <hr class="border-gray-200 dark:border-gray-700">
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="eventCategory" class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Categorie</label>
-                                        <select id="eventCategory" name="category" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-dark2 dark:text-white">
-                                            <option value="Workshop">Workshop</option>
-                                            <option value="Seminar">Seminar</option>
-                                            <option value="Conferință">Conferință</option>
-                                            <option value="Training">Training</option>
-                                            <option value="Webinar">Webinar</option>
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label for="eventFacilitator" class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Facilitator</label>
-                                        <input type="text" id="eventFacilitator" name="facilitator" placeholder="Echipa CMIEA"
-                                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-dark2 dark:text-white placeholder-gray-400">
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="eventStartDate" class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Data și ora de început</label>
-                                        <input type="datetime-local" id="eventStartDate" name="startDate" required
-                                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-dark2 dark:text-white">
-                                    </div>
-
-                                    <div>
-                                        <label for="eventEndDate" class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Data și ora de sfârșit</label>
-                                        <input type="datetime-local" id="eventEndDate" name="endDate"
-                                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-dark2 dark:text-white">
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="eventAvailableSpots" class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Locuri disponibile</label>
-                                        <input type="number" id="eventAvailableSpots" name="availableSpots" min="1"
-                                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-dark2 dark:text-white">
-                                    </div>
-
-                                    <div>
-                                        <label for="eventImage" class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">URL Imagine</label>
-                                        <input type="url" id="eventImage" name="image"
-                                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-dark2 dark:text-white">
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label for="eventRequirements" class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Cerințe de participare</label>
-                                    <textarea id="eventRequirements" name="requirements" rows="3"
-                                              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-dark2 dark:text-white placeholder-gray-400"></textarea>
-                                </div>
-
-                                <div>
-                                    <label for="eventNotes" class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Note importante</label>
-                                    <textarea id="eventNotes" name="notes" rows="3"
-                                              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-dark2 dark:text-white placeholder-gray-400"></textarea>
-                                </div>
+                        <!-- First column of fields -->
+                        <div class="space-y-4">
+                            <div>
+                                <label for="eventTitle" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Titlu Eveniment</label>
+                                <input type="text" id="eventTitle" name="title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
                             </div>
 
-                <div class="flex justify-end gap-3 mt-8">
-                    <button type="button" id="cancelEventBtn"
-                            class="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-white dark:bg-dark2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
-                        Anulează
-                    </button>
-                    <button type="submit" id="saveEventBtn"
-                            class="px-6 py-2.5 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                        Salvează
-                    </button>
-                </div>
-            </form>
+                            <div>
+                                <label for="eventDescription" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descriere</label>
+                                <textarea id="eventDescription" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" required></textarea>
+                            </div>
+
+                            <div>
+                                <label for="eventCategory" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Categorie</label>
+                                <select id="eventCategory" name="category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                                    <option value="Workshop">Workshop</option>
+                                    <option value="Seminar">Seminar</option>
+                                    <option value="Conferință">Conferință</option>
+                                    <option value="Training">Training</option>
+                                    <option value="Webinar">Webinar</option>
+                                </select>
+                            </div>
+
+
+                            <div>
+                                <label for="eventFacilitator" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Facilitator</label>
+                                <input type="text" id="eventFacilitator" name="facilitator" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Echipa CMIEA">
+                            </div>
+                        </div>
+
+                        <!-- Second column of fields -->
+                        <div class="space-y-4">
+                            <div>
+                                <label for="eventStartDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data și ora de început</label>
+                                <input type="datetime-local" id="eventStartDate" name="startDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                            </div>
+
+                            <div>
+                                <label for="eventEndDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data și ora de sfârșit</label>
+                                <input type="datetime-local" id="eventEndDate" name="endDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            </div>
+
+                            <div>
+                                <label for="eventAvailableSpots" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Locuri disponibile</label>
+                                <input type="number" id="eventAvailableSpots" name="availableSpots" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white" min="1">
+                            </div>
+
+                            <div>
+                                <label for="eventImage" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL Imagine</label>
+                                <input type="url" id="eventImage" name="image" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            </div>
+
+                            <div>
+                                <label for="eventRequirements" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Cerințe de participare</label>
+                                <textarea id="eventRequirements" name="requirements" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
+                            </div>
+
+                            <div>
+                                <label for="eventNotes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Note importante</label>
+                                <textarea id="eventNotes" name="notes" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <button type="button" id="cancelEventBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                            Anulează
+                        </button>
+                        <button type="submit" id="saveEventBtn" class="px-4 py-2 bg-main dark:bg-maindark text-white rounded-md hover:bg-maindark dark:hover:bg-maindark">
+                            Salvează
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
