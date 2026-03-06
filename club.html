@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+    </style>
+    <title>Club - CMIEA</title>
+    <link rel="icon" href="assets/icon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style type="text/tailwindcss">
+      @theme {
+        --color-main: #3542FF;
+        --color-light: #f9f9f9;
+        --color-maindark:#4954eb;
+        --color-sur: #777878;
+        --color-sur2: #9B9FA9;
+        --color-dark: #1c1c1c;
+        --color-dark2: #272727;
+        --color-dark3: #3A3A3A;
+      }
+    </style>
+    <script>
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+</head>
+<body class="overflow-x-hidden bg-light dark:bg-[#1c1c1c]">
+    <div class="fixed z-9 top-0 left-0 right-0 bg-light/90 dark:bg-[#1c1c1c] backdrop-blur w-screen h-16 lg:h-20 "></div>
+    <nav class="fixed z-10 top-4 left-4 right-4 lg:top-6 lg:right-32 lg:left-32 xl:left-64 xl:right-64">
+        <div class="flex items-center justify-between">
+            <div class="flex justify-between gap-10 items-center w-full lg:w-auto">
+                <a href="/index.html"><div class="flex items-end gap-1"><img class="w-10" src="assets/icon.png" alt="logo"> <div class="font-semibold text-xl dark:text-white">CMIEA  </div></div> </a>
+                <div id="burger" class="w-8 lg:hidden "> <img src="assets/burger-alb.svg" class="hidden dark:block" alt="burger"> <img src="assets/burger-negru.svg" class="dark:hidden" alt="burger"></div>
+                <ul class="hidden lg:flex flex gap-10 text-sur dark:text-white/50">
+                    <li><a href="/despre.html">Despre noi</a></li>
+                    <li><a href="/cursuri.html">Cursuri</a></li>
+                    <li><a href="/contact.html">Contacte</a></li>
+                    <li><a href="/evenimente.html">Evenimente</a></li>
+                    <li><a href="/cluburi.html" class="text-main dark:text-maindark font-semibold">Cluburi</a></li>
+                </ul>
+            </div>
+            <div class="font-medium gap-6 hidden lg:flex items-center">
+                <div id="auth-buttons" class="flex items-center gap-4">
+                    <a href="/login.html">
+                        <button class="px-4 py-2 text-sur hover:text-black dark:hover:text-white">Login</button>
+                    </a>
+                    <a href="/register.html">
+                        <button class="p-2 text-main dark:text-white border border-main dark:border-white rounded-xl dark:hover:bg-gray-100/10 hover:bg-black/10">Sign up</button>
+                    </a>
+                </div>
+                <div id="user-menu" class="hidden relative">
+                    <button id="user-menu-button" class="flex items-center gap-2 px-4 py-2 text-sur hover:text-black dark:hover:text-white">
+                        <span id="user-email-display">User</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-xl bg-white dark:bg-dark2 shadow-xl border border-gray-200 dark:border-dark2 ">
+                        <div class="py-1">
+                            <a href="/dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-sur dark:hover:bg-dark3">Dashboard</a>
+                            <button id="logout-btn" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-sur dark:hover:bg-dark3">Logout</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="theme-toggle" type="button" class="ml-4 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <nav id="phone-nav" class="phone-nav hidden fixed z-11 bg-sur h-screen w-screen lg:hidden">
+        <div id="close" class="text-main dark:text-white absolute right-6 top-6 text-3xl font-thin"><i class="ph ph-x text-5xl"></i></div>
+        <div class="h-full w-full text-black bg-white/90 font-thin dark:text-white dark:bg-[#1c1c1c] flex flex-col items-end p-4 justify-center text-4xl gap-5">
+            <a href="/despre.html">Despre noi</a>
+            <a href="/cursuri.html">Cursuri</a>
+            <a href="/contact.html">Contacte</a>
+            <a href="/evenimente.html">Evenimente</a>
+            <a href="/cluburi.html" class="text-main dark:text-maindark font-semibold">Cluburi</a>
+            <hr class="border-black my-6 w-3/4 ml-auto dark:border-white">
+            <div class="flex gap-1 text-end flex-col text-2xl w-3/4">
+                <a href="login.html" class="w-full text-right">
+                    <button class="px-4 py-2 text-sur hover:text-black dark:hover:text-white text-end" >Login</button>
+                </a>
+                <a href="register.html" class="w-full text-right">
+                    <button class="p-2 text-main dark:text-white border border-main dark:border-white rounded-xl dark:hover:bg-gray-100/10 hover:bg-black/10">Sign up</button>
+                </a>
+            </div>
+            <button id="theme-toggle2" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5">
+                <svg id="theme-toggle-dark-icon2" class="hidden w-10 h-10" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                <svg id="theme-toggle-light-icon2" class="hidden w-10 h-10" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Club Details -->
+    <div class="mt-28 p-4 lg:px-32 xl:px-64 dark:text-white">
+        <div id="club-details-container">
+            <!-- Club details will be loaded here by JavaScript -->
+            <div class="flex justify-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-main dark:border-maindark"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Form Section -->
+    <section id="registration-section" class="hidden px-4 lg:px-32 xl:px-64 mt-8">
+        <div class="bg-white dark:bg-dark2 rounded-2xl shadow-xl p-6 lg:p-10">
+            <div class="mb-8">
+                <h2 class="text-2xl lg:text-3xl font-bold dark:text-white mb-3">
+                    <i class="ph ph-clipboard-text text-main dark:text-maindark mr-2"></i>
+                    Formular de Înregistrare
+                </h2>
+                <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                    Formular de înregistrare la cluburile de interes pentru chișinăuieni organizate de Centrul Municipal de Învățare și Educație a Adulților. Veți fi contactați telefonic de către specialiștii centrului pentru a discuta unele detalii.
+                </p>
+            </div>
+
+            <form id="club-registration-form" class="space-y-6">
+                <!-- Email -->
+                <div>
+                    <label for="reg-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">E-mail <span class="text-red-500">*</span></label>
+                    <input type="email" id="reg-email" name="email" required
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-main focus:border-transparent dark:bg-dark3 dark:text-white placeholder-gray-400"
+                        placeholder="exemplu@email.com">
+                </div>
+
+                <!-- Nume, Prenume -->
+                <div>
+                    <label for="reg-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nume, Prenume <span class="text-red-500">*</span></label>
+                    <input type="text" id="reg-name" name="numePrenume" required
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-main focus:border-transparent dark:bg-dark3 dark:text-white placeholder-gray-400"
+                        placeholder="Nume Prenume">
+                </div>
+
+                <!-- Numar telefon -->
+                <div>
+                    <label for="reg-phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Număr telefon <span class="text-red-500">*</span></label>
+                    <input type="tel" id="reg-phone" name="telefon" required
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-main focus:border-transparent dark:bg-dark3 dark:text-white placeholder-gray-400"
+                        placeholder="+373 XX XXX XXX">
+                </div>
+
+                <!-- Anul nasterii -->
+                <div>
+                    <label for="reg-birthyear" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Anul nașterii <span class="text-red-500">*</span></label>
+                    <input type="number" id="reg-birthyear" name="anulNasterii" required min="1930" max="2010"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-main focus:border-transparent dark:bg-dark3 dark:text-white placeholder-gray-400"
+                        placeholder="ex: 1990">
+                </div>
+
+                <!-- Ocupatia -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ocupația <span class="text-red-500">*</span></label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="ocupatia" value="Angajat în câmpul muncii" required class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Angajat în câmpul muncii</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="ocupatia" value="În concediul de îngrijire a copilului / de maternitate" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">În concediul de îngrijire a copilului / de maternitate</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="ocupatia" value="Șomer" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Șomer</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="ocupatia" value="Student" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Student</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="ocupatia" value="Pensionar" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Pensionar</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="ocupatia" value="Alt statut" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Alt statut</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Studii -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Studii <span class="text-red-500">*</span></label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="studii" value="Gimnaziu" required class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Gimnaziu</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="studii" value="Liceu" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Liceu</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="studii" value="Profesional tehnic (școală profesională, colegiu)" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Profesional tehnic (școală profesională, colegiu)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="studii" value="Superioare incomplete" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Superioare incomplete</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="studii" value="Superioare complete" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Superioare complete</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="studii" value="Postuniversitare (masterat, doctorat)" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Postuniversitare (masterat, doctorat)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                            <input type="radio" name="studii" value="Alte" class="w-4 h-4 text-main focus:ring-main">
+                            <span class="text-gray-700 dark:text-gray-300">Alte</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Profesia actuala -->
+                <div>
+                    <label for="reg-profession" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Profesia actuală (pentru cei care sunt sau au fost angajați în câmpul muncii) <span class="text-red-500">*</span></label>
+                    <input type="text" id="reg-profession" name="profesiaActuala" required
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-main focus:border-transparent dark:bg-dark3 dark:text-white placeholder-gray-400"
+                        placeholder="Profesia dvs.">
+                </div>
+
+                <!-- Cluburi selectate -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Membru al cărui Club doriți să deveniți? <span class="text-red-500">*</span>
+                        <span class="block text-xs text-gray-500 dark:text-gray-400 mt-1 font-normal">Puteți să vă înregistrați pentru a frecventa oricare club doriți. Veți fi contactați telefonic de către specialiștii centrului pentru a discuta unele detalii.</span>
+                    </label>
+                    <div id="clubs-checkboxes" class="space-y-2">
+                        <!-- Checkboxes will be loaded dynamically from Firestore -->
+                    </div>
+                </div>
+
+                <!-- Asteptari -->
+                <div>
+                    <label for="reg-expectations" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Care sunt așteptările dvs. cu privire la activitatea Clubului de interes selectat?</label>
+                    <textarea id="reg-expectations" name="asteptari" rows="4"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-main focus:border-transparent dark:bg-dark3 dark:text-white placeholder-gray-400"
+                        placeholder="Descrieți așteptările dvs..."></textarea>
+                </div>
+
+                <!-- Privacy Notice -->
+                <div class="bg-gray-50 dark:bg-dark3 rounded-lg p-4 text-xs text-gray-500 dark:text-gray-400">
+                    <p><i class="ph ph-shield-check mr-1"></i> CMIEA garantează respectarea drepturilor titularilor datelor cu caracter personal conform prevederilor din Legea nr.133 din 08.07.2011 privind protecția datelor cu caracter personal, luând toate măsurile pentru a proteja aceste date contra accesului neautorizat, utilizarea sau divulgarea lor.</p>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button type="submit" id="submit-btn"
+                        class="flex-1 bg-main dark:bg-maindark text-white py-4 rounded-xl font-semibold text-lg hover:bg-maindark transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        Trimite Formularul
+                    </button>
+                    <a href="/cluburi.html" class="flex-shrink-0 px-6 py-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-medium text-center hover:bg-gray-50 dark:hover:bg-dark3 transition-colors">
+                        Înapoi la Cluburi
+                    </a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Thank You Message -->
+    <section class="px-4 lg:px-32 xl:px-64 mt-8">
+        <div class="bg-white dark:bg-dark2 rounded-2xl p-6 shadow-lg">
+            <p class="text-gray-600 dark:text-gray-300 text-sm text-center">
+                Vă mulțumim pentru interesul față de serviciile oferite de Centrul Municipal de Învățare și Educație a Adulților. Vom reveni în curând cu o confirmare prin e-mail și la telefon.
+            </p>
+        </div>
+    </section>
+
+    <!-- Other Clubs Section -->
+    <section class="px-4 lg:px-32 xl:px-64 mt-16">
+        <div class="w-full py-4">
+            <h2 class="mb-6 text-3xl font-bold normal-case md:text-4xl tracking-wide dark:text-white">
+                Alte <span class="text-main dark:text-maindark">Cluburi</span>
+            </h2>
+            <div id="other-clubs" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Other clubs will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="p-4 lg:px-32 xl:px-64 mt-24 dark:text-white bg-main dark:bg-maindark rounded-t-4xl text-white">
+        <div class="flex flex-col justify-between gap-10 items-start lg:flex-row py-10">
+            <div class="flex flex-col gap-2 max-w-[350px]">
+                <a href="index.html"><p class="text-5xl font-bold">CMIEA</p></a>
+                <p>„Sprijinim educația și dezvoltarea adulților prin cursuri gratuite și programe dedicate."</p>
+                <div class="flex gap-5 mt-2">
+                    <a href="https://www.facebook.com/profile.php?id=100091913902284"><img class="w-7" src="assets/x.png" alt="x"></a>
+                    <a href="https://www.facebook.com/profile.php?id=100091913902284"><img class="w-7" src="assets/instagram.png" alt="ig"></a>
+                    <a href="https://www.facebook.com/profile.php?id=100091913902284"><img class="w-7" src="assets/facebook.png" alt="fb"></a>
+                </div>
+            </div>
+            <div class="flex gap-10 flex-col lg:flex-row">
+                <ul class="flex flex-col gap-2">
+                    <li><p class="font-bold">Platforma</p></li>
+                    <li><a href="/cursuri.html">Cursuri oferite</a></li>
+                    <li><a href="/evenimente.html">Evenimente</a></li>
+                    <li><a href="/cluburi.html">Cluburi</a></li>
+                    <li><a href="#reviews">Evaluare si feedback</a></li>
+                </ul>
+                <ul class="flex flex-col gap-2">
+                    <li><p class="font-bold">Despre noi</p></li>
+                    <li><a href="/despre.html">Misiunea noastra</a></li>
+                    <li><a href="/contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <div class="flex flex-col lg:flex-row gap-10 justify-between py-5">
+            <p>&copy; 2025 CMIEA</p>
+            <div class="flex flex-col lg:flex-row text-sm gap-2 lg:gap-8">
+                <a href="https://www.chisinau.md/ro/termeni-si-conditii-20914_271827.html">Termeni și Condiții </a>
+                <a href="https://www.chisinau.md/ro/politica-de-confidentialitate-20914_271825.html">Politica de Confidențialitate</a>
+                <a href="https://www.cloudflare.com/learning/privacy/what-are-cookies/">Politica privind Cookies</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div id="registration-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-dark2 rounded-lg shadow-xl p-6 m-4 max-w-sm w-full transform transition-all">
+            <div class="flex justify-center mb-4">
+                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900">
+                    <svg class="h-8 w-8 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+            </div>
+            <h3 class="text-lg font-medium text-center text-gray-900 dark:text-white mb-2">Înregistrare realizată cu succes!</h3>
+            <p class="text-sm text-center text-gray-600 dark:text-gray-300 mb-6">
+                V-ați înregistrat cu succes la club. Veți fi contactați telefonic de către specialiștii centrului.
+            </p>
+            <div class="flex justify-center">
+                <button id="close-modal" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-main dark:bg-maindark text-base font-medium text-white hover:bg-maindark">
+                    Perfect!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js" type="module"></script>
+    <script type="module" src="js/auth-state.js"></script>
+    <script src="js/club.js"></script>
+</body>
+</html>

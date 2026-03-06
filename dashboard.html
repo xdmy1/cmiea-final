@@ -106,6 +106,7 @@
                     <li><a href="/cursuri.html">Cursuri</a></li>
                     <li><a href="/contact.html">Contacte</a></li>
                     <li><a href="/evenimente.html">Evenimente</a></li>
+                    <li><a href="/cluburi.html">Cluburi</a></li>
                 </ul>
             </div>
 
@@ -136,6 +137,7 @@
             <a href="/cursuri.html">Cursuri</a>
             <a href="/contact.html">Contacte</a>
             <a href="/evenimente.html">Evenimente</a>
+            <a href="/cluburi.html">Cluburi</a>
             <hr class="border-black my-6 w-3/4 ml-auto dark:border-white">
             <div class="flex gap-1 text-end flex-col text-2xl w-3/4">
                 <a href="login.html" class="w-full text-right">
@@ -170,6 +172,10 @@
                     <a href="/evenimente.html" class="px-4 py-2 bg-main hover:bg-maindark dark:bg-maindark text-white rounded-lg transition duration-200 flex items-center gap-2">
                         <i class="ph ph-calendar-plus"></i>
                         <span>Evenimente</span>
+                    </a>
+                    <a href="/cluburi.html" class="px-4 py-2 bg-gray-100 dark:bg-dark3 hover:bg-gray-200 dark:hover:bg-dark text-gray-800 dark:text-white rounded-lg transition duration-200 flex items-center gap-2">
+                        <i class="ph ph-users-three"></i>
+                        <span>Cluburi</span>
                     </a>
                 </div>
             </div>
@@ -237,6 +243,23 @@
             </div>
             <div id="eventRegistrations" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Event registration cards will be inserted here by dashboard.js -->
+            </div>
+        </div>
+
+        <!-- Club registrations section -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-white flex items-center">
+                    <i class="ph ph-users-three text-main dark:text-maindark mr-2"></i>
+                    Înregistrările mele la cluburi
+                </h2>
+                <a href="/cluburi.html" class="text-main dark:text-maindark hover:underline flex items-center text-sm">
+                    Vezi toate cluburile
+                    <i class="ph ph-arrow-right ml-1"></i>
+                </a>
+            </div>
+            <div id="clubRegistrations" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Club registration cards will be inserted here by dashboard.js -->
             </div>
         </div>
     </main>

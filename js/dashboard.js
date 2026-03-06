@@ -48,6 +48,7 @@ async function loadDashboard(user) {
         await Promise.all([
             loadCourseEnrollments(user),
             loadEventRegistrations(user),
+            loadClubRegistrations(user),
             checkUpcomingClassesAndEvents(user)
         ]);
         
@@ -420,6 +421,80 @@ function getEventStatusBadge(status) {
             return '<span class="bg-red-100 text-red-800 text-xs font-medium px-3 py-1 rounded-full dark:bg-red-900 dark:text-red-300">Respins</span>';
         default:
             return '<span class="bg-gray-100 text-gray-800 text-xs font-medium px-3 py-1 rounded-full dark:bg-gray-700 dark:text-gray-300">Necunoscut</span>';
+    }
+}
+
+function getClubStatusBadge(status) {
+    switch (status) {
+        case 'approved':
+            return '<span class="bg-green-100 text-green-800 text-xs font-medium px-3 py-1 rounded-full dark:bg-green-900 dark:text-green-300">Aprobat</span>';
+        case 'pending':
+            return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-3 py-1 rounded-full dark:bg-yellow-900 dark:text-yellow-300">În așteptare</span>';
+        case 'rejected':
+            return '<span class="bg-red-100 text-red-800 text-xs font-medium px-3 py-1 rounded-full dark:bg-red-900 dark:text-red-300">Respins</span>';
+        default:
+            return '<span class="bg-gray-100 text-gray-800 text-xs font-medium px-3 py-1 rounded-full dark:bg-gray-700 dark:text-gray-300">Necunoscut</span>';
+    }
+}
+
+async function loadClubRegistrations(user) {
+    const container = document.getElementById('clubRegistrations');
+    if (!container) return;
+
+    try {
+        const snapshot = await db.collection('clubRegistrations')
+            .where('userId', '==', user.uid).get();
+
+        if (snapshot.empty) {
+            container.innerHTML = `
+                <div class="col-span-full bg-white dark:bg-dark2 rounded-xl shadow-md p-8 text-center">
+                    <div class="w-16 h-16 bg-gray-100 dark:bg-dark3 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="ph ph-users-three text-gray-400 dark:text-gray-600 text-2xl"></i>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">Nu aveți înregistrări la cluburi.</p>
+                    <a href="/cluburi.html" class="inline-block bg-main dark:bg-maindark text-white px-4 py-2 rounded-lg hover:bg-main/90 dark:hover:bg-maindark/90 transition-colors">
+                        Explorează cluburile disponibile
+                    </a>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = '';
+        snapshot.forEach(doc => {
+            const reg = doc.data();
+            const regDate = reg.registrationDate ?
+                new Date(reg.registrationDate.seconds * 1000).toLocaleDateString('ro-RO') :
+                'Dată necunoscută';
+            const clubsList = Array.isArray(reg.cluburiSelectate) ? reg.cluburiSelectate.join(', ') : (reg.clubName || 'N/A');
+            const statusBadge = getClubStatusBadge(reg.status);
+
+            const card = document.createElement('div');
+            card.className = 'bg-white dark:bg-dark2 rounded-xl shadow-md overflow-hidden transition-all duration-300 border border-gray-100 dark:border-dark3';
+            card.innerHTML = `
+                <div class="p-5 border-b border-gray-100 dark:border-dark3 bg-gray-50 dark:bg-dark3 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold dark:text-white line-clamp-1">${clubsList}</h3>
+                    <div>${statusBadge}</div>
+                </div>
+                <div class="p-5">
+                    <div class="mt-auto pt-2">
+                        <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                            <i class="ph ph-calendar-check mr-1"></i>
+                            ${regDate}
+                        </span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error('Error loading club registrations:', error);
+        container.innerHTML = `
+            <div class="col-span-full p-4 bg-red-100 dark:bg-red-800/30 rounded-lg">
+                <p class="text-red-700 dark:text-red-300">Eroare la încărcarea înregistrărilor la cluburi.</p>
+            </div>
+        `;
     }
 }
 
