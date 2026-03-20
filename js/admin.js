@@ -23,6 +23,9 @@ const addCourseBtn = document.getElementById('addCourseBtn');
 
 // DOM Elements - Enrollments
 const enrollmentTableBody = document.getElementById('enrollmentTableBody');
+const exportEnrollmentExcelBtn = document.getElementById('exportEnrollmentExcelBtn');
+const enrollmentDateSortBtn = document.getElementById('enrollmentDateSortBtn');
+const enrollmentDateSortArrow = document.getElementById('enrollmentDateSortArrow');
 
 // DOM Elements - Users
 const usersContainer = document.getElementById('usersContainer');
@@ -59,6 +62,7 @@ let currentEventId = null;
 let isAdmin = false;
 let currentSection = 'course';
 let eventRegistrationsTableBody = null;
+let enrollmentDateSortOrder = 'desc';
 
 // Theme toggle functionality
 const setupThemeToggle = (toggleBtn, darkIcon, lightIcon) => {
@@ -308,6 +312,14 @@ function initializeAdmin() {
 function setupEventListeners() {
     if (addCourseBtn) addCourseBtn.addEventListener('click', showAddCourseModal);
     if (addEventBtn) addEventBtn.addEventListener('click', showAddEventModal);
+    if (exportEnrollmentExcelBtn) exportEnrollmentExcelBtn.addEventListener('click', exportEnrollmentRequestsToExcel);
+    if (enrollmentDateSortBtn) {
+        enrollmentDateSortBtn.addEventListener('click', () => {
+            enrollmentDateSortOrder = enrollmentDateSortOrder === 'desc' ? 'asc' : 'desc';
+            updateEnrollmentDateSortIndicator();
+            loadEnrollmentRequests();
+        });
+    }
     if (closeModalBtn) closeModalBtn.addEventListener('click', hideModal);
     if (cancelBtn) cancelBtn.addEventListener('click', hideModal);
     if (courseForm) courseForm.addEventListener('submit', handleCourseFormSubmit);
@@ -933,6 +945,8 @@ function updateEventRegistrationStatus(registrationId, status) {
 
 function loadEnrollmentRequests() {
     if (!isAdmin) return;
+
+    updateEnrollmentDateSortIndicator();
     
     console.log("Loading enrollment requests");
     showLoading();
@@ -960,17 +974,136 @@ function loadEnrollmentRequests() {
                     return;
                 }
                 
+                const enrollments = [];
                 snapshot.forEach(doc => {
                     const enrollment = doc.data();
                     enrollment.id = doc.id;
-                    appendEnrollmentRow(enrollment);
+                    enrollments.push(enrollment);
                 });
+
+                sortEnrollmentsByDate(enrollments, enrollmentDateSortOrder);
+                enrollments.forEach(appendEnrollmentRow);
             }
         })
         .catch(error => {
             hideLoading();
             showAlert(`Eroare la încărcarea cererilor: ${error.message}`, 'error');
             console.error('Error fetching enrollments:', error);
+        });
+}
+
+function getFirestoreTimestampMs(value) {
+    if (!value) return 0;
+
+    if (typeof value.seconds === 'number') {
+        return value.seconds * 1000;
+    }
+
+    if (typeof value.toDate === 'function') {
+        return value.toDate().getTime();
+    }
+
+    const parsedDate = new Date(value);
+    return Number.isNaN(parsedDate.getTime()) ? 0 : parsedDate.getTime();
+}
+
+function sortEnrollmentsByDate(enrollments, sortOrder = 'desc') {
+    enrollments.sort((left, right) => {
+        const leftTimestamp = getFirestoreTimestampMs(left.enrollmentDate);
+        const rightTimestamp = getFirestoreTimestampMs(right.enrollmentDate);
+
+        return sortOrder === 'asc'
+            ? leftTimestamp - rightTimestamp
+            : rightTimestamp - leftTimestamp;
+    });
+}
+
+function updateEnrollmentDateSortIndicator() {
+    if (!enrollmentDateSortArrow) return;
+
+    if (enrollmentDateSortOrder === 'asc') {
+        enrollmentDateSortArrow.textContent = '↑';
+        enrollmentDateSortArrow.title = 'Sortare crescătoare';
+    } else {
+        enrollmentDateSortArrow.textContent = '↓';
+        enrollmentDateSortArrow.title = 'Sortare descrescătoare';
+    }
+}
+
+function formatFirestoreDate(value) {
+    if (!value) return 'N/A';
+
+    if (value.seconds) {
+        return new Date(value.seconds * 1000).toLocaleDateString('ro-RO');
+    }
+
+    if (value.toDate) {
+        return value.toDate().toLocaleDateString('ro-RO');
+    }
+
+    const parsedDate = new Date(value);
+    return Number.isNaN(parsedDate.getTime()) ? 'N/A' : parsedDate.toLocaleDateString('ro-RO');
+}
+
+function exportEnrollmentRequestsToExcel() {
+    if (!isAdmin) {
+        showAlert('Nu aveți permisiuni pentru această acțiune.', 'error');
+        return;
+    }
+
+    if (typeof XLSX === 'undefined') {
+        showAlert('Librăria pentru export Excel nu este disponibilă.', 'error');
+        return;
+    }
+
+    showLoading();
+
+    db.collection('enrollments')
+        .where('status', '==', 'pending')
+        .get()
+        .then(snapshot => {
+            hideLoading();
+
+            if (snapshot.empty) {
+                showAlert('Nu există cereri de înscriere pentru export.', 'info');
+                return;
+            }
+
+            const enrollments = [];
+            snapshot.forEach(doc => {
+                const enrollment = doc.data();
+                enrollments.push({
+                    ...enrollment,
+                    id: doc.id
+                });
+            });
+
+            sortEnrollmentsByDate(enrollments, enrollmentDateSortOrder);
+
+                const excelData = enrollments.map(enrollment => ({
+                    'ID Cerere': enrollment.id,
+                    'Nume': enrollment.userName || 'N/A',
+                    'Email': enrollment.email || 'N/A',
+                    'Telefon': enrollment.phone || 'N/A',
+                    'Curs': enrollment.courseName || 'N/A',
+                    'Data Cererii': formatFirestoreDate(enrollment.enrollmentDate),
+                    'Ocupație': enrollment.occupation || 'N/A',
+                    'Status': enrollment.status || 'pending'
+                }));
+
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.json_to_sheet(excelData);
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Cereri Curs');
+
+            const today = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(workbook, `cereri-curs-${today}.xlsx`);
+
+            showAlert('Exportul Excel a fost generat cu succes.', 'success');
+        })
+        .catch(error => {
+            hideLoading();
+            showAlert(`Eroare la export: ${error.message}`, 'error');
+            console.error('Error exporting enrollment requests:', error);
         });
 }
 
@@ -982,9 +1115,7 @@ function appendEnrollmentRow(enrollment) {
     const row = document.createElement('tr');
     row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700';
     
-    const formattedDate = enrollment.enrollmentDate ? 
-        new Date(enrollment.enrollmentDate.seconds * 1000).toLocaleDateString('ro-RO') : 
-        'N/A';
+    const formattedDate = formatFirestoreDate(enrollment.enrollmentDate);
     
     row.innerHTML = `
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">${enrollment.userName || 'N/A'}</td>
