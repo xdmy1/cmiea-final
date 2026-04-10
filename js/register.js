@@ -24,7 +24,8 @@ const DOM_SELECTORS = {
     firstName: 'firstName',
     lastName: 'lastName',
     errorMessage: 'errorMessage',
-    submitButton: 'button[type="submit"]'
+    submitButton: 'button[type="submit"]',
+    termsAgree: 'termsAgree'
 };
 
 // Firebase configuration
@@ -163,7 +164,14 @@ class RegistrationHandler {
         
         // Hide any previous errors
         Utils.hideError();
-        
+
+        // Check terms agreement
+        const termsCheckbox = Utils.getElementById(DOM_SELECTORS.termsAgree);
+        if (termsCheckbox && !termsCheckbox.checked) {
+            Utils.displayError(this.form, 'Trebuie să accepți Termenii și Condițiile pentru a continua.');
+            return;
+        }
+
         try {
             Utils.setButtonLoading(submitButton, true);
             

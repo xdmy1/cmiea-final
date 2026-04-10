@@ -5,16 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-
     <style type="text/tailwindcss">
     @custom-variant dark (&:where(.dark, .dark *));
     </style>
-    <title>Cluburi - CMIEA</title>
+    <title>Politica de Confidențialitate - CMIEA</title>
     <link rel="icon" href="assets/icon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
@@ -37,26 +33,20 @@
         document.documentElement.classList.remove('dark');
     }
     </script>
-    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-    </script>
 </head>
-<body class="overflow-x-hidden bg-light dark:bg-[#1c1c1c] ">
+<body class="bg-light dark:bg-dark">
     <div class="fixed z-9 top-0 left-0 right-0 bg-light/90 dark:bg-[#1c1c1c] backdrop-blur w-screen h-16 lg:h-20 "></div>
     <nav class="fixed z-10 top-4 left-4 right-4 lg:top-6 lg:right-32 lg:left-32 xl:left-64 xl:right-64">
         <div class="flex items-center justify-between">
             <div class="flex justify-between gap-10 items-center w-full lg:w-auto">
-                <a href="/index.html"><div class="flex items-end gap-1"><img class="w-10" src="assets/icon.png" alt="logo"> <div class="font-semibold text-xl dark:text-white">CMIEA  </div></div> </a>
+                <a href="/index.html"><div class="flex items-end gap-1"><img class="w-10" src="assets/icon.png" alt="logo"> <div class="font-semibold text-xl dark:text-white">CMIEA</div></div></a>
                 <div id="burger" class="w-8 lg:hidden "> <img src="assets/burger-alb.svg" class="hidden dark:block" alt="burger"> <img src="assets/burger-negru.svg" class="dark:hidden" alt="burger"></div>
                 <ul class="hidden lg:flex flex gap-10 text-sur dark:text-white/50">
                     <li><a href="/despre.html">Despre noi</a></li>
                     <li><a href="/cursuri.html">Cursuri</a></li>
                     <li><a href="/contact.html">Contacte</a></li>
                     <li><a href="/evenimente.html">Evenimente</a></li>
-                    <li><a href="/cluburi.html" class="text-main dark:text-maindark font-semibold">Cluburi</a></li>
+                    <li><a href="/cluburi.html">Cluburi</a></li>
                 </ul>
             </div>
             <div class="font-medium gap-6 hidden lg:flex items-center">
@@ -88,19 +78,18 @@
         </div>
     </nav>
 
-    <nav id="phone-nav" class="phone-nav hidden fixed z-11 bg-sur h-screen w-screen lg:hidden">
+    <nav id="phone-nav" class="phone-nav hidden fixed z-11 bg-sur h-screen w-screen ">
         <div id="close" class="text-main dark:text-white absolute right-6 top-6 text-3xl font-thin"><i class="ph ph-x text-5xl"></i></div>
         <div class="h-full w-full text-black bg-white/90 font-thin dark:text-white dark:bg-[#1c1c1c] flex flex-col items-end p-4 justify-center text-4xl gap-5">
             <a href="/despre.html">Despre noi</a>
             <a href="/cursuri.html">Cursuri</a>
             <a href="/contact.html">Contacte</a>
             <a href="/evenimente.html">Evenimente</a>
-            <a href="/cluburi.html" class="text-main dark:text-maindark font-semibold">Cluburi</a>
-
-            <hr class="border-black my-6 w-3/4 ml-auto dark:border-white">
+            <a href="/cluburi.html">Cluburi</a>
+            <hr class="border-black my-6 w-3/4 ml-auto">
             <div class="flex gap-1 text-end flex-col text-2xl w-3/4">
                 <a href="login.html" class="w-full text-right">
-                    <button class="px-4 py-2 text-sur hover:text-black dark:hover:text-white text-end" >Login</button>
+                    <button class="px-4 py-2 text-sur hover:text-black dark:hover:text-white text-end">Login</button>
                 </a>
                 <a href="register.html" class="w-full text-right">
                     <button class="p-2 text-main dark:text-white border border-main dark:border-white rounded-xl dark:hover:bg-gray-100/10 hover:bg-black/10">Sign up</button>
@@ -113,102 +102,126 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="px-4 lg:px-32 xl:px-64 mt-24 dark:text-white">
-        <div class="bg-gradient-to-r from-main to-maindark dark:from-maindark dark:to-main rounded-2xl p-8 lg:p-12 text-white">
-            <div class="flex flex-col lg:flex-row items-center gap-8">
-                <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-4">
-                        <i class="ph ph-users-three text-3xl"></i>
-                        <span class="text-sm font-medium uppercase tracking-wider opacity-80">Cluburi de Interes</span>
-                    </div>
-                    <h1 class="text-3xl lg:text-5xl font-bold mb-4">Cluburile CMIEA</h1>
-                    <p class="text-lg opacity-90 mb-6">Invităm cetățenii din Municipiul Chișinău să se înregistreze la cluburile de interes organizate de către Centrul Municipal de Învățare și Educație a Adulților (CMIEA).</p>
-                    <div class="flex flex-row gap-1 sm:gap-2 py-1 sm:py-2 bg-white/20 backdrop-blur rounded-full px-2 sm:px-4 md:px-6 w-fit h-fit items-center justify-center font-medium">
-                        <i class="ph ph-map-pin text-sm sm:text-base md:text-xl"></i>
-                        <p class="text-xs sm:text-sm md:text-base whitespace-normal sm:whitespace-nowrap">
-                            Toate cluburile au loc la <span class="underline underline-offset-1">oficiul CMIEA</span>
-                        </p>
-                    </div>
+    <main class="pt-24 lg:pt-32 pb-12 px-4 lg:px-32 xl:px-64">
+        <div class="max-w-screen-xl mx-auto">
+            <div class="bg-white dark:bg-dark2 shadow-lg rounded-2xl p-6 lg:p-12">
+                <h1 class="text-4xl font-bold mb-8 dark:text-white">Politica de Confidențialitate</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">Ultima actualizare: 10 aprilie 2025</p>
+
+                <div class="prose dark:text-gray-300 space-y-6 text-gray-700">
+                    <section>
+                        <h2 class="text-2xl font-semibold mb-3 dark:text-white">1. Introducere</h2>
+                        <p>Centrul Municipal de Instruire și Educație a Adulților (CMIEA) respectă confidențialitatea datelor dumneavoastră personale. Această politică descrie modul în care colectăm, utilizăm, stocăm și protejăm informațiile personale ale utilizatorilor platformei noastre.</p>
+                    </section>
+
+                    <section>
+                        <h2 class="text-2xl font-semibold mb-3 dark:text-white">2. Datele pe care le colectăm</h2>
+                        <p>În cadrul utilizării platformei, putem colecta următoarele categorii de date personale:</p>
+                        <ul class="list-disc pl-6 space-y-1 mt-2">
+                            <li><strong>Date de identificare:</strong> prenume, nume, adresa de email.</li>
+                            <li><strong>Date de contact:</strong> număr de telefon.</li>
+                            <li><strong>Date demografice:</strong> data nașterii, ocupația, nivelul de studii.</li>
+                            <li><strong>Date tehnice:</strong> adresa IP, tipul browserului, informații despre dispozitiv.</li>
+                            <li><strong>Date de utilizare:</strong> cursurile la care v-ați înscris, evenimentele la care participați, activitatea pe platformă.</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 class="text-2xl font-semibold mb-3 dark:text-white">3. Scopul colectării datelor</h2>
+                        <p>Datele personale sunt colectate și utilizate în următoarele scopuri:</p>
+                        <ul class="list-disc pl-6 space-y-1 mt-2">
+                            <li>Crearea și gestionarea contului de utilizator.</li>
+                            <li>Înscrierea și participarea la cursuri, evenimente și cluburi.</li>
+                            <li>Comunicarea cu utilizatorii (notificări, actualizări, răspunsuri la solicitări).</li>
+                            <li>Îmbunătățirea serviciilor și a experienței pe platformă.</li>
+                            <li>Respectarea obligațiilor legale.</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 class="text-2xl font-semibold mb-3 dark:text-white">4. Stocarea și securitatea datelor</h2>
+                        <p>Datele dumneavoastră sunt stocate în baze de date securizate prin intermediul serviciilor Google Firebase. Aplicăm măsuri tehnice și organizatorice adecvate pentru protecția datelor personale, inclusiv:</p>
+                        <ul class="list-disc pl-6 space-y-1 mt-2">
+                            <li>Criptarea datelor în tranzit și în repaus.</li>
+                            <li>Autentificarea securizată a utilizatorilor.</li>
+                            <li>Verificarea adresei de email.</li>
+                            <li>Accesul restricționat la datele personale doar personalului autorizat.</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 class="text-2xl font-semibold mb-3 dark:text-white">5. Partajarea datelor</h2>
+                        <p>CMIEA nu vinde și nu închiriază datele personale ale utilizatorilor. Datele pot fi partajate cu:</p>
+                        <ul class="list-disc pl-6 space-y-1 mt-2">
+                            <li><strong>Furnizori de servicii:</strong> Google Firebase (autentificare și stocare date), pentru funcționarea platformei.</li>
+                            <li><strong>Autorități publice:</strong> în cazul în care legislația în vigoare impune acest lucru.</li>
+                            <li><strong>Formatori:</strong> datele necesare organizării cursurilor (nume, email).</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 class="text-2xl font-semibold mb-3 dark:text-white">6. Drepturile utilizatorilor</h2>
+                        <p>Aveți următoarele drepturi privind datele dumneavoastră personale:</p>
+                        <ul class="list-disc pl-6 space-y-1 mt-2">
+                            <li><strong>Dreptul de acces:</strong> puteți solicita informații despre datele personale pe care le deținem.</li>
+                            <li><strong>Dreptul la rectificare:</strong> puteți solicita corectarea datelor inexacte.</li>
+                            <li><strong>Dreptul la ștergere:</strong> puteți solicita ștergerea datelor personale.</li>
+                            <li><strong>Dreptul la portabilitate:</strong> puteți solicita transferul datelor într-un format structurat.</li>
+                            <li><strong>Dreptul la opoziție:</strong> puteți refuza prelucrarea datelor în anumite situații.</li>
+                        </ul>
+                        <p class="mt-2">Pentru exercitarea acestor drepturi, contactați-ne la adresa de email <a href="mailto:cmieainfo@gmail.com" class="text-main hover:underline">cmieainfo@gmail.com</a>.</p>
+                    </section>
+
+                    <section>
+                        <h2 class="text-2xl font-semibold mb-3 dark:text-white">7. Durata stocării datelor</h2>
+                        <p>Datele personale sunt păstrate atât timp cât contul dumneavoastră este activ sau cât este necesar pentru îndeplinirea scopurilor descrise. La cererea de ștergere a contului, datele vor fi eliminate în termen de 30 de zile, cu excepția celor necesare din motive legale.</p>
+                    </section>
+
+                    <section>
+                        <h2 class="text-2xl font-semibold mb-3 dark:text-white">8. Modificări ale politicii</h2>
+                        <p>CMIEA poate actualiza această politică periodic. Orice modificare va fi publicată pe această pagină cu data ultimei actualizări. Vă recomandăm să consultați periodic această pagină.</p>
+                    </section>
+
+                    <section>
+                        <h2 class="text-2xl font-semibold mb-3 dark:text-white">9. Contact</h2>
+                        <p>Pentru întrebări sau solicitări legate de datele dumneavoastră personale:</p>
+                        <ul class="list-none space-y-1 mt-2">
+                            <li>Email: <a href="mailto:cmieainfo@gmail.com" class="text-main hover:underline">cmieainfo@gmail.com</a></li>
+                            <li>Telefon: <a href="tel:061121865" class="text-main hover:underline">061 121 865</a></li>
+                            <li>Adresă: Str. Matei Basarab 14, Chișinău, Republica Moldova</li>
+                        </ul>
+                    </section>
                 </div>
-                <div class="hidden lg:flex w-48 h-48 bg-white/10 rounded-full items-center justify-center">
-                    <i class="ph ph-users-three text-8xl opacity-50"></i>
-                </div>
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- Clubs Grid -->
-    <section class="px-4 lg:px-32 xl:px-64 mt-16">
-        <div class="flex flex-col sm:flex-row w-full justify-between items-start sm:items-center mb-8">
-            <div class="flex flex-col">
-                <h2 class="text-3xl lg:text-5xl font-semibold dark:text-white">Cluburi Disponibile</h2>
-                <p class="text-sur dark:text-white/70 mt-2">Alege clubul care te interesează și înregistrează-te</p>
-            </div>
-        </div>
-
-        <div id="clubs-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Clubs will be loaded here -->
-        </div>
-
-        <!-- No Clubs Message -->
-        <div id="no-clubs-message" class="hidden text-center py-12">
-            <div class="bg-white dark:bg-dark2 rounded-xl p-8 shadow-lg">
-                <i class="ph ph-users-three text-6xl text-gray-400 dark:text-gray-600 mb-4"></i>
-                <h3 class="text-xl font-semibold text-gray-700 dark:text-white mb-2">Nu există cluburi disponibile</h3>
-                <p class="text-gray-500 dark:text-gray-400">Verifică din nou mai târziu pentru cluburi noi!</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Info Section -->
-    <section class="px-4 lg:px-32 xl:px-64 mt-16">
-        <div class="bg-white dark:bg-dark2 rounded-2xl p-8 shadow-lg">
-            <h3 class="text-xl font-bold dark:text-white mb-4">
-                <i class="ph ph-info text-main dark:text-maindark mr-2"></i>
-                Despre CMIEA
-            </h3>
-            <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-                Centrul Municipal de Învățare și Educație a Adulților (CMIEA) este o subdiviziune structurală a Direcției Generale Educație, Tineret și Sport (DGETS), care în temeiul Memorandumului privind înțelegerea și cooperarea reciprocă dintre Primăria Municipiului Chișinău și IP „DVV International Moldova", oferă un complex de servicii comunitare în scopul învățării adulților și sensibilizării publicului cu privire la importanța învățării pe tot parcursul vieții.
-            </p>
-            <p class="text-gray-500 dark:text-gray-400 text-sm">
-                <i class="ph ph-shield-check mr-1"></i>
-                CMIEA garantează respectarea drepturilor titularilor datelor cu caracter personal conform prevederilor din Legea nr.133 din 08.07.2011 privind protecția datelor cu caracter personal.
-            </p>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer class="p-4 lg:px-32 xl:px-64 mt-24 dark:text-white bg-main dark:bg-maindark rounded-t-4xl text-white">
         <div class="flex flex-col justify-between gap-10 items-start lg:flex-row py-10">
             <div class="flex flex-col gap-2 max-w-[350px]">
-                <a href="index.html"><p class="text-5xl font-bold">CMIEA</p></a>
+                <a href="/index.html"><p class="text-5xl font-bold">CMIEA</p></a>
                 <p>„Sprijinim educația și dezvoltarea adulților prin cursuri gratuite și programe dedicate."</p>
                 <div class="flex gap-5 mt-2">
-                    <a href="https://www.facebook.com/profile.php?id=100091913902284"><img class="w-7" src="assets/x.png" alt="x"></a>
                     <a href="https://www.facebook.com/profile.php?id=100091913902284"><img class="w-7" src="assets/instagram.png" alt="ig"></a>
                     <a href="https://www.facebook.com/profile.php?id=100091913902284"><img class="w-7" src="assets/facebook.png" alt="fb"></a>
+                    <a href="https://t.me/+03ceuSlIN25mMTky" class="text-white hover:text-gray-300 flex items-center justify-center w-7 h-7 rounded-full bg-white/20"><i class="ph ph-telegram-logo text-lg"></i></a>
                 </div>
             </div>
-
             <div class="flex gap-10 flex-col lg:flex-row">
                 <ul class="flex flex-col gap-2">
                     <li><p class="font-bold">Platforma</p></li>
                     <li><a href="/cursuri.html">Cursuri oferite</a></li>
-                    <li><a href="/evenimente.html">Evenimente</a></li>
-                    <li><a href="/cluburi.html">Cluburi</a></li>
+                    <li><a href="">Inscriere la cursuri</a></li>
                     <li><a href="#reviews">Evaluare si feedback</a></li>
                 </ul>
                 <ul class="flex flex-col gap-2">
-                    <li><p class="font-bold" >Despre noi</p></li>
+                    <li><p class="font-bold">Despre noi</p></li>
                     <li><a href="/despre.html">Misiunea noastra</a></li>
                     <li><a href="/contact.html">Contact</a></li>
                 </ul>
             </div>
         </div>
-
         <hr>
-
         <div class="flex flex-col lg:flex-row gap-10 justify-between py-5">
             <p>&copy; 2025 CMIEA</p>
             <div class="flex flex-col lg:flex-row text-sm gap-2 lg:gap-8">
@@ -219,8 +232,11 @@
         </div>
     </footer>
 
+    <a href="https://t.me/+03ceuSlIN25mMTky" target="_blank" class="telegram-float" title="Contactează-ne pe Telegram">
+        <i class="ph ph-telegram-logo"></i>
+    </a>
+
     <script src="js/main.js" type="module"></script>
     <script type="module" src="js/auth-state.js"></script>
-    <script src="js/cluburi.js"></script>
 </body>
 </html>
