@@ -111,11 +111,23 @@ export function mergeEvents(live: CommunityItem[], archive: CommunityItem[]) {
       (item) => !liveIds.has(item.id) && !liveKeys.has(eventKey(item)),
     ),
   ]
-    .filter((item) => !item.deleted)
+    .filter((item) => !item.deleted && !isRemovedTestEvent(item))
     .sort(
       (a, b) =>
         Number(Boolean(b.featured)) - Number(Boolean(a.featured)) ||
         (Date.parse(b.startDate || "") || 0) -
           (Date.parse(a.startDate || "") || 0),
     );
+}
+
+function isRemovedTestEvent(item: CommunityItem) {
+  const title = (item.title || item.name || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLocaleLowerCase("ro");
+  return (
+    ["test", "test workshop", "workshop test"].includes(title) ||
+    title.startsWith("deschiderea primului centru municipal de invatare")
+  );
 }

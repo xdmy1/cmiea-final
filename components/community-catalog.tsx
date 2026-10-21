@@ -58,7 +58,11 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
   const visibleItems =
     kind === "events"
       ? mergeEvents(items, archivedEvents)
-      : items.filter((item) => !item.deleted);
+      : items.filter(
+          (item) =>
+            !item.deleted &&
+            item.name?.trim().toLocaleLowerCase("ro") !== "test",
+        );
   const filtered = visibleItems.filter(
     (item) =>
       (!category || item.category === category) &&
@@ -73,6 +77,7 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
   ];
   return (
     <div className="app-container community-catalog" aria-busy={loading}>
+      {kind === "clubs" ? <ClubUpdate /> : null}
       {kind === "events" ? (
         <div className="catalog-filters">
           <div className="catalog-filter-field">
@@ -183,6 +188,57 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
     </div>
   );
 }
+
+function ClubUpdate() {
+  return (
+    <aside className="club-update" aria-labelledby="club-update-title">
+      <div className="club-update-copy">
+        <span className="section-eyebrow">
+          Noutăți din comunitate · octombrie 2026
+        </span>
+        <h2 id="club-update-title">Cluburile de interes CMIEA</h2>
+        <p>
+          Programul publicat pe Facebook anunță 14 ședințe gratuite în
+          octombrie, cu activități de leadership, sănătate, yoga, tehnologie și
+          creație.
+        </p>
+        <div className="club-update-links">
+          <a
+            className="app-button"
+            href="https://forms.gle/Fn6cJ5RGDb7vZfMh7"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Formular de înscriere <ArrowUpRight size={17} />
+          </a>
+          <a
+            className="club-update-source"
+            href="https://www.facebook.com/Pretura.sectorului.riscani/posts/pfbid02E2pKYKysBuHKag666Zq7H9vuB4KUJV3B9CTPaV2TmtV18iAG48B9taF97JDXsv3Nl"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Vezi anunțul pe Facebook <ArrowUpRight size={15} />
+          </a>
+        </div>
+      </div>
+      <a
+        className="club-update-poster-link"
+        href="https://www.facebook.com/Pretura.sectorului.riscani/posts/pfbid02E2pKYKysBuHKag666Zq7H9vuB4KUJV3B9CTPaV2TmtV18iAG48B9taF97JDXsv3Nl"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Deschide afișul programului cluburilor din octombrie pe Facebook"
+      >
+        <img
+          className="club-update-poster"
+          src={sitePath("/assets/news/68935.jpg")}
+          alt="Programul cluburilor CMIEA din octombrie 2026, cu datele și orele întâlnirilor"
+          loading="lazy"
+        />
+      </a>
+    </aside>
+  );
+}
+
 function formatDate(value?: string) {
   const date = new Date(value || "");
   return Number.isFinite(date.getTime())
