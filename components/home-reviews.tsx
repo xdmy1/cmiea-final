@@ -57,7 +57,7 @@ export function HomeReviews() {
   }
   return (
     <>
-      <section className="app-container" aria-label="Partenerii CMIEA">
+      <section className="app-container mt-6" aria-label="Partenerii CMIEA">
         <div className="partner-marquee">
           <div className="marquee-track">
             {[0, 1].map((copy) => (
