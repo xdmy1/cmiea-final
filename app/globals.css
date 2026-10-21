@@ -326,6 +326,7 @@ a {
   min-width: 200px;
 }
 .catalog-filters .catalog-search {
+  background: var(--site-bg);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -337,6 +338,7 @@ a {
   min-height: 44px;
 }
 .catalog-search input {
+  background: transparent;
   color: var(--site-text);
   width: 100%;
   font-size: 13px;
@@ -476,6 +478,103 @@ a {
   font-size: 14px;
   line-height: 1.7;
   color: var(--site-muted);
+}
+.community-card-labels {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.event-status {
+  padding: 4px 9px;
+  border: 1px solid var(--site-line);
+  border-radius: 999px;
+  background: var(--site-bg);
+  color: var(--site-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+.community-card-image.event-poster {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: white;
+}
+.archived-event {
+  padding-top: 32px;
+}
+.archived-event-heading {
+  max-width: 850px;
+  margin-block: 36px;
+}
+.archived-event-heading h1 {
+  margin-block: 18px;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+.archived-event-heading > p {
+  color: var(--site-muted);
+  font-size: 18px;
+  line-height: 1.65;
+}
+.archived-event-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 40px;
+}
+.archived-event-poster {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--site-line);
+  border-radius: 16px;
+}
+.archived-event-copy {
+  display: grid;
+  gap: 24px;
+  line-height: 1.75;
+}
+.archived-event-copy > p {
+  color: var(--site-muted);
+}
+.archived-event-meta {
+  display: grid;
+  gap: 16px;
+}
+.archived-event-meta dt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--site-muted);
+}
+.archived-event-meta dd {
+  margin-top: 4px;
+  font-size: 15px;
+}
+.archived-event-notice {
+  padding: 16px;
+  background: var(--site-surface);
+  border: 1px solid var(--site-line);
+  border-radius: 12px;
+  font-size: 14px;
+}
+.archived-event-sources {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}
+.archived-event-sources h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+@media (max-width: 800px) {
+  .archived-event-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
 }
 .community-card-bottom {
   margin-top: auto;

@@ -4,6 +4,7 @@ import { readFile, access } from "node:fs/promises";
 import { load } from "cheerio";
 import { legacyDocument } from "../lib/legacy.ts";
 import { GET } from "../app/curs/route.ts";
+import { eventStatus } from "../lib/catalog.ts";
 
 test("login and registration retain their head modules, forms and reset dialog", async () => {
   for (const page of ["login", "register", "register-step2"]) {
@@ -67,5 +68,30 @@ test("native news cards have real local images and explicit public source links"
     assert.equal(new URL(post.url).hostname, "t.me");
     assert(Number.isFinite(Date.parse(post.publishedAt)));
     await access("." + post.image);
+  }
+});
+
+test("archived events have past dates, unique detail routes, local posters and public sources", async () => {
+  const events = JSON.parse(await readFile("content/events.json", "utf8"));
+  assert.equal(events.length, 3);
+  assert.equal(
+    new Set(events.map((event) => event.archiveSlug)).size,
+    events.length,
+  );
+  for (const event of events) {
+    assert.equal(
+      eventStatus(event, Date.parse("2026-10-21T12:00:00Z")),
+      "past",
+    );
+    assert.match(event.archiveSlug, /^[a-z0-9-]+$/);
+    assert(event.details.length > 0);
+    assert(
+      event.sources.some(
+        (source) => new URL(source.url).hostname === "chisinauedu.dgets.md",
+      ),
+    );
+    for (const source of event.sources)
+      assert.equal(new URL(source.url).protocol, "https:");
+    await access("." + event.image);
   }
 });

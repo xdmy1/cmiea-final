@@ -24,6 +24,7 @@ export type CommunityItem = {
   location?: string;
   featured?: boolean;
   deleted?: boolean;
+  archiveSlug?: string;
 };
 
 export function filterCourses(
@@ -81,4 +82,24 @@ export function eventStatus(item: CommunityItem, now = Date.now()) {
   const end = Date.parse(item.endDate || item.startDate || "");
   if (!Number.isFinite(start)) return "unknown";
   return now > end ? "past" : now >= start ? "ongoing" : "upcoming";
+}
+
+export function mergeEvents(live: CommunityItem[], archive: CommunityItem[]) {
+  const eventKey = (item: CommunityItem) =>
+    `${(item.title || item.name || "").trim().toLocaleLowerCase("ro")}::${(item.startDate || "").slice(0, 10)}`;
+  const liveIds = new Set(live.map((item) => item.id));
+  const liveKeys = new Set(live.map(eventKey));
+  return [
+    ...live,
+    ...archive.filter(
+      (item) => !liveIds.has(item.id) && !liveKeys.has(eventKey(item)),
+    ),
+  ]
+    .filter((item) => !item.deleted)
+    .sort(
+      (a, b) =>
+        Number(Boolean(b.featured)) - Number(Boolean(a.featured)) ||
+        (Date.parse(b.startDate || "") || 0) -
+          (Date.parse(a.startDate || "") || 0),
+    );
 }

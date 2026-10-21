@@ -27,6 +27,7 @@ npm run build
 - `components/`: navigare, temă, autentificare, carduri, paginare, recenzii, noutăți și navigarea adminului.
 - `lib/`: clientul Firebase, filtrarea cursurilor și adaptorul pentru formularele existente.
 - `content/news.json`: anunțuri selectate, cu data, imaginea și sursa fiecăruia.
+- `content/events.json`: arhiva evenimentelor verificate, cu datele, afișele și sursele originale.
 - `scripts/prepare-assets.mjs`: pregătește resursele, adaptoază inițializarea formularelor la React și generează redirecționările pentru URL-urile vechi, păstrând parametrii și ancorele.
 
 Homepage-ul, listele de cursuri/evenimente/cluburi, noutățile, navigarea și panoul de navigare admin sunt componente React. Formularele de autentificare, înregistrare, înscriere și editare admin păstrează logica Firebase existentă, într-o zonă izolată de componentele React.
@@ -44,6 +45,12 @@ npm run news:refresh
 ```
 
 Comanda de mai sus reimportă selecția explicită din `scripts/import-public-news.mjs`. Build-ul obișnuit folosește fișierele locale și nu depinde de disponibilitatea rețelelor sociale.
+
+## Evenimente încheiate
+
+Cele trei ediții inițiale din arhivă sunt documentate prin anunțurile publice DGETS, postarea Facebook a Preturii Rîșcani și retrospectivele Primăriei Chișinău. Fiecare pagină de detalii păstrează linkurile surselor. Afișele sunt salvate în `assets/events/`.
+
+Arhiva din `content/events.json` se afișează alături de evenimentele Firebase, inclusiv când serviciul nu răspunde. Datele evenimentelor existente au prioritate, iar intrările identice nu se dublează. Paginile `/evenimente/arhiva/[slug]/` sunt exportate static și indică faptul că înscrierile sunt închise. Adăugarea arhivei nu scrie în baza Firebase; evenimentele administrate din panou rămân în Firebase.
 
 ## Publicare
 

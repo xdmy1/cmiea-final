@@ -5,6 +5,7 @@ import {
   formatCoursePeriod,
   safeImage,
   eventStatus,
+  mergeEvents,
 } from "../lib/catalog.ts";
 
 test("search and all course filters apply together without changing source data", () => {
@@ -89,4 +90,42 @@ test("event statuses handle future, current, finished and missing dates", () => 
     "past",
   );
   assert.equal(eventStatus({ id: "1" }, now), "unknown");
+});
+
+test("the event archive survives unavailable live data and respects live duplicates and deletions", () => {
+  const archive = [
+    {
+      id: "archive-1",
+      title: "Eveniment CMIEA",
+      startDate: "2025-12-13T11:00:00+02:00",
+    },
+    {
+      id: "archive-2",
+      title: "Conferință",
+      startDate: "2025-12-20T09:00:00+02:00",
+    },
+  ];
+  assert.deepEqual(
+    mergeEvents([], archive).map((item) => item.id),
+    ["archive-2", "archive-1"],
+  );
+  const live = [
+    {
+      id: "live-1",
+      title: " Eveniment CMIEA ",
+      startDate: "2025-12-13T11:00:00+02:00",
+    },
+    {
+      id: "live-2",
+      title: "CONFERINȚĂ",
+      startDate: "2025-12-20T09:00:00+02:00",
+      deleted: true,
+    },
+  ];
+  assert.deepEqual(
+    mergeEvents(live, archive).map((item) => item.id),
+    ["live-1"],
+  );
+  assert.equal(archive.length, 2);
+  assert.equal(live.length, 2);
 });

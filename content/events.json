@@ -1,0 +1,75 @@
+[
+  {
+    "id": "archive-dialoguri-angela-cutasevici-2026",
+    "archiveSlug": "dialoguri-angela-cutasevici-2026",
+    "title": "Dialoguri Deschise cu Angela Cutasevici",
+    "description": "O întâlnire despre educație și dezvoltarea comunității, organizată la CMIEA cu ocazia Zilei Internaționale a Educației.",
+    "details": [
+      "Ediția din 31 ianuarie 2026 a adus în discuție experiența Angelei Cutasevici în educație și administrarea instituțiilor școlare. Tema întâlnirii a fost rolul educației în viața oamenilor și a comunității.",
+      "Evenimentul a fost organizat cu sprijinul Primăriei Chișinău și al Direcției Generale Educație, Tineret și Sport, în parteneriat cu DVV International Moldova și cu sprijinul BMZ."
+    ],
+    "category": "Dialoguri Deschise",
+    "startDate": "2026-01-31T11:00:00+02:00",
+    "location": "CMIEA, str. Matei Basarab 14, Chișinău",
+    "image": "/assets/events/dialoguri-angela-cutasevici-2026.jpg",
+    "sources": [
+      {
+        "label": "Anunțul DGETS",
+        "url": "https://chisinauedu.dgets.md/news/cu-angela-cutasevici"
+      },
+      {
+        "label": "Retrospectiva Primăriei Chișinău",
+        "url": "https://t.me/Primaria_Chisinau/59280"
+      }
+    ]
+  },
+  {
+    "id": "archive-conferinta-educatia-adultilor-2025",
+    "archiveSlug": "conferinta-educatia-adultilor-2025",
+    "title": "Conferința Municipală în domeniul Educației Adulților — ediția a II-a",
+    "description": "Experți și formatori reuniți la CMIEA pentru schimb de experiență, ateliere și idei despre învățarea adulților.",
+    "details": [
+      "Conferința din 20 decembrie 2025 a abordat metode de lucru, inovații și colaborări în educația adulților. Programul a inclus prezentări și ateliere despre competențe pentru viață, tehnologie, sănătate și artă.",
+      "Activitatea a făcut parte din proiectul CMIEA implementat de Primăria Chișinău prin DGETS, împreună cu DVV International Moldova, cu sprijinul BMZ."
+    ],
+    "category": "Conferințe",
+    "startDate": "2025-12-20T09:00:00+02:00",
+    "location": "CMIEA, str. Matei Basarab 14, Chișinău",
+    "image": "/assets/events/conferinta-educatia-adultilor-2025.jpg",
+    "sources": [
+      {
+        "label": "Anunțul DGETS",
+        "url": "https://chisinauedu.dgets.md/news/conferinta-municipala-in-domeniul-educatiei-adultilor-editia-a-ii-a"
+      },
+      {
+        "label": "Retrospectiva Primăriei Chișinău",
+        "url": "https://t.me/Primaria_Chisinau/58229"
+      }
+    ]
+  },
+  {
+    "id": "archive-ziua-usilor-deschise-2025",
+    "archiveSlug": "ziua-usilor-deschise-2025",
+    "title": "Ziua Ușilor Deschise la CMIEA",
+    "description": "Prezentarea ofertei educaționale și 14 sesiuni gratuite de artă, tehnologie, sănătate, limbi străine și dezvoltare personală.",
+    "details": [
+      "Pe 13 decembrie 2025, CMIEA a organizat o zi dedicată descoperirii cursurilor și cluburilor centrului. Programul a început la ora 11:00, cu prezentarea ofertei educaționale și discuții cu membrii comunității.",
+      "Atelierele s-au desfășurat în două runde: 12:00–13:30 și 13:45–15:15. Participanții au putut explora activități practice de pictură, design vestimentar, instrumente Google, Excel, prim ajutor, leadership și limbi străine."
+    ],
+    "category": "Ziua Ușilor Deschise",
+    "startDate": "2025-12-13T11:00:00+02:00",
+    "endDate": "2025-12-13T15:15:00+02:00",
+    "location": "CMIEA, str. Matei Basarab 14, Chișinău",
+    "image": "/assets/events/ziua-usilor-deschise-2025.webp",
+    "sources": [
+      {
+        "label": "Postarea de pe Facebook",
+        "url": "https://www.facebook.com/Pretura.sectorului.riscani/posts/pfbid02SGjXQoJMyS4gB2QcqMtqhqVhBAtuSLkUnquVNBh2ziRxRTLj35tM4SHpB378tMf5l"
+      },
+      {
+        "label": "Anunțul DGETS",
+        "url": "https://chisinauedu.dgets.md/news/te-invitam-pe-13-decembrie-ora-1100-la-ziua-usilor-deschise-cmiea"
+      }
+    ]
+  }
+]

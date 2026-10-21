@@ -3,7 +3,13 @@ import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { ArrowUpRight, CalendarDays, Users } from "lucide-react";
 import { firebaseClient } from "@/lib/firebase";
-import { eventStatus, safeImage, type CommunityItem } from "@/lib/catalog";
+import {
+  eventStatus,
+  mergeEvents,
+  safeImage,
+  type CommunityItem,
+} from "@/lib/catalog";
+import archivedEvents from "@/content/events.json";
 
 export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
   const [items, setItems] = useState<CommunityItem[]>([]);
@@ -19,15 +25,11 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
     getDocs(collection(firebaseClient().db, kind))
       .then((snapshot) => {
         if (!alive) return;
-        const data = snapshot.docs
-          .map((doc) => ({ ...doc.data(), id: doc.id }) as CommunityItem)
-          .filter((item) => !item.deleted);
-        data.sort((a, b) =>
-          kind === "events"
-            ? Number(Boolean(b.featured)) - Number(Boolean(a.featured)) ||
-              Date.parse(b.startDate || "") - Date.parse(a.startDate || "")
-            : (a.name || "").localeCompare(b.name || "", "ro"),
+        const data = snapshot.docs.map(
+          (doc) => ({ ...doc.data(), id: doc.id }) as CommunityItem,
         );
+        if (kind === "clubs")
+          data.sort((a, b) => (a.name || "").localeCompare(b.name || "", "ro"));
         setItems(data);
         setLoading(false);
       })
@@ -41,14 +43,18 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
       alive = false;
     };
   }, [kind, retry]);
-  const filtered = items.filter(
+  const visibleItems =
+    kind === "events"
+      ? mergeEvents(items, archivedEvents)
+      : items.filter((item) => !item.deleted);
+  const filtered = visibleItems.filter(
     (item) =>
       (!category || item.category === category) &&
       (!status || eventStatus(item) === status),
   );
   const categories = [
     ...new Set(
-      items
+      visibleItems
         .map((item) => item.category)
         .filter((value): value is string => Boolean(value)),
     ),
@@ -83,13 +89,18 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
           </label>
         </div>
       ) : null}
-      {loading ? (
+      {loading && !visibleItems.length ? (
         <p className="catalog-status" role="status">
           Se încarcă {kind === "events" ? "evenimentele" : "cluburile"}…
         </p>
-      ) : error ? (
+      ) : null}
+      {error ? (
         <div className="catalog-status" role="alert">
-          <p>Nu s-a putut încărca lista.</p>
+          <p>
+            {visibleItems.length
+              ? "Lista actualizată nu s-a putut încărca. Evenimentele din arhivă sunt disponibile mai jos."
+              : "Nu s-a putut încărca lista."}
+          </p>
           <button
             className="app-button secondary"
             onClick={() => setRetry((value) => value + 1)}
@@ -97,22 +108,28 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
             Încearcă din nou
           </button>
         </div>
-      ) : !filtered.length ? (
+      ) : null}
+      {!filtered.length && !loading && !error ? (
         <p className="catalog-status">
           Nu sunt {kind === "events" ? "evenimente" : "cluburi"} pentru selecția
           curentă.
         </p>
-      ) : (
+      ) : null}
+      {filtered.length ? (
         <div className="community-grid">
           {filtered.map((item) => (
             <a
               key={item.id}
               className="community-card"
-              href={`/${kind === "events" ? "eveniment" : "club"}/?id=${encodeURIComponent(item.id)}`}
+              href={
+                item.archiveSlug
+                  ? `/evenimente/arhiva/${item.archiveSlug}/`
+                  : `/${kind === "events" ? "eveniment" : "club"}/?id=${encodeURIComponent(item.id)}`
+              }
             >
               {item.image ? (
                 <img
-                  className="community-card-image"
+                  className={`community-card-image${item.archiveSlug ? " event-poster" : ""}`}
                   src={safeImage(item.image)}
                   alt=""
                   loading="lazy"
@@ -123,11 +140,16 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
                 </div>
               )}
               <div className="community-card-copy">
-                <span className="section-eyebrow">
-                  {kind === "events"
-                    ? item.category || "Eveniment"
-                    : "Comunitatea CMIEA"}
-                </span>
+                <div className="community-card-labels">
+                  <span className="section-eyebrow">
+                    {kind === "events"
+                      ? item.category || "Eveniment"
+                      : "Comunitatea CMIEA"}
+                  </span>
+                  {kind === "events" && eventStatus(item) === "past" ? (
+                    <span className="event-status">Încheiat</span>
+                  ) : null}
+                </div>
                 <h2>{item.title || item.name}</h2>
                 <p className="line-clamp-3">{item.description}</p>
                 <div className="community-card-bottom">
@@ -143,13 +165,16 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
             </a>
           ))}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
 function formatDate(value?: string) {
   const date = new Date(value || "");
   return Number.isFinite(date.getTime())
-    ? date.toLocaleDateString("ro-RO", { dateStyle: "medium" })
+    ? date.toLocaleDateString("ro-RO", {
+        dateStyle: "medium",
+        timeZone: "Europe/Chisinau",
+      })
     : "Dată de anunțat";
 }
