@@ -1,4 +1,14 @@
-import { mkdir, readFile, writeFile, stat, rm } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile, stat, rm } from "node:fs/promises";
+import { routes } from "./routes.mjs";
+
+// Fail if the export is incomplete rather than reporting a successful build
+// containing only the separately preserved course document.
+for (const route of Object.keys(routes).filter((route) => route !== "curs")) {
+  await access(new URL(`../out/${route}/index.html`, import.meta.url));
+}
+for (const path of ["index.html", "_next", "assets", "CNAME"]) {
+  await access(new URL(`../out/${path}`, import.meta.url));
+}
 
 // Static route handlers can emit an extensionless file. GitHub Pages requires
 // an index document for directory routes, so normalise this one preserved page.
