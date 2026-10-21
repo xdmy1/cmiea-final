@@ -1,0 +1,17 @@
+node_modules/
+.next/
+.next-build/
+out/
+public/assets/
+public/formatori/
+public/js/
+public/css/
+public/legacy/
+public/*.html
+public/*.json
+public/CNAME
+public/.nojekyll
+*.tsbuildinfo
+next-env.d.ts
+.env*.local
+.DS_Store

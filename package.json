@@ -1,0 +1,39 @@
+{
+  "name": "cmiea-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare:assets": "node scripts/prepare-assets.mjs",
+    "dev": "npm run prepare:assets && next dev --hostname 127.0.0.1 --port 4173",
+    "build": "npm run prepare:assets && next build && node scripts/finish-export.mjs",
+    "check": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "news:refresh": "node scripts/import-public-news.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@phosphor-icons/web": "^2.1.2",
+    "cheerio": "^1.2.0",
+    "firebase": "^12.8.0",
+    "lucide-react": "^1.61.0",
+    "next": "^16.4.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "postcss": "^8.5.31",
+    "prettier": "^3.9.10",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.14.6"
+  }
+}
