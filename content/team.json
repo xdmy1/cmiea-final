@@ -1,0 +1,31 @@
+{
+  "members": [
+    {
+      "id": "natalia-zaiat",
+      "name": "ZAIAȚ Natalia",
+      "role": "Șefa Centrului Municipal de Învățare și Educație a Adulților din Chișinău",
+      "image": "/formatori/1..JPG"
+    },
+    {
+      "id": "tatiana-bujnita-tricolici",
+      "name": "BUJNIȚĂ-TRICOLICI Tatiana",
+      "role": "Șefa Serviciului de planificare și raportare",
+      "image": "/formatori/2..JPG"
+    },
+    {
+      "id": "aurica-cociug",
+      "name": "COCIUG Aurica",
+      "role": "Specialist principal, Serviciul planificare și raportare",
+      "image": "/formatori/3..JPG"
+    },
+    {
+      "id": "aliona-novitchi",
+      "name": "NOVIȚCHI Aliona",
+      "role": "Specialist principal, Secția managementul învățării adulților",
+      "image": "/formatori/4..JPG"
+    }
+  ],
+  "quote": "CMIEA este locul unde pasiunea și inovația se întâlnesc. Am pornit cu o viziune clară și am construit o echipă dedicată excelenței. Prin muncă, creativitate și perseverență, reușim să oferim soluții care fac diferența.",
+  "quoteAuthor": "Daniela Munca-Aftenev",
+  "quoteRole": "Șef adjunct DGETS"
+}

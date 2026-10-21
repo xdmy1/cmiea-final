@@ -1,3 +1,4 @@
+import { sitePath } from "@/lib/site-path";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, CalendarDays, MapPin } from "lucide-react";
@@ -35,7 +36,7 @@ export default async function ArchivedEventPage({
       <SiteHeader />
       <main className="app-main">
         <article className="app-container archived-event">
-          <a className="text-link" href="/evenimente/">
+          <a className="text-link" href={sitePath("/evenimente/")}>
             <ArrowLeft size={18} aria-hidden="true" /> Toate evenimentele
           </a>
           <div className="archived-event-heading">
@@ -49,7 +50,7 @@ export default async function ArchivedEventPage({
           <div className="archived-event-body">
             <img
               className="archived-event-poster"
-              src={event.image}
+              src={sitePath(event.image)}
               alt={`Afișul evenimentului ${event.title}`}
             />
             <div className="archived-event-copy">

@@ -1,4 +1,5 @@
 "use client";
+import { sitePath } from "@/lib/site-path";
 
 import { useEffect, useRef, useState } from "react";
 import {
@@ -149,7 +150,7 @@ export function CourseCatalog({
             </h2>
           </div>
           {home ? (
-            <a href="/cursuri/" className="text-link">
+            <a href={sitePath("/cursuri/")} className="text-link">
               Toate cursurile <ArrowRight size={18} />
             </a>
           ) : null}
@@ -231,22 +232,19 @@ export function CourseCatalog({
         </div>
       ) : (
         <>
-          <div className="catalog-results-header" ref={results}>
-            <p className="catalog-count" aria-live="polite">
-              {filtered.length} cursuri disponibile
-            </p>
+          <div className="catalog-results" ref={results}>
+            {visible.length ? (
+              <div className="course-grid">
+                {visible.map((course) => (
+                  <CourseCard key={course.id} course={course} />
+                ))}
+              </div>
+            ) : (
+              <p className="catalog-status">
+                Nu am găsit cursuri pentru filtrele alese.
+              </p>
+            )}
           </div>
-          {visible.length ? (
-            <div className="course-grid">
-              {visible.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
-          ) : (
-            <p className="catalog-status">
-              Nu am găsit cursuri pentru filtrele alese.
-            </p>
-          )}
           {pages > 1 ? (
             <Pagination
               page={page}
@@ -297,7 +295,7 @@ function Pagination({
 function CourseCard({ course }: { course: Course }) {
   return (
     <a
-      href={`/curs/?id=${encodeURIComponent(course.id)}`}
+      href={sitePath(`/curs/?id=${encodeURIComponent(course.id)}`)}
       className="course-card"
     >
       <div className="course-card-heading">

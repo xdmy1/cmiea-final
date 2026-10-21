@@ -10,6 +10,7 @@ import {
   type CommunityItem,
 } from "@/lib/catalog";
 import archivedEvents from "@/content/events.json";
+import { sitePath } from "@/lib/site-path";
 
 export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
   const [items, setItems] = useState<CommunityItem[]>([]);
@@ -121,11 +122,11 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
             <a
               key={item.id}
               className="community-card"
-              href={
+              href={sitePath(
                 item.archiveSlug
                   ? `/evenimente/arhiva/${item.archiveSlug}/`
-                  : `/${kind === "events" ? "eveniment" : "club"}/?id=${encodeURIComponent(item.id)}`
-              }
+                  : `/${kind === "events" ? "eveniment" : "club"}/?id=${encodeURIComponent(item.id)}`,
+              )}
             >
               {item.image ? (
                 <img

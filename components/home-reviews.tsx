@@ -1,4 +1,5 @@
 "use client";
+import { sitePath } from "@/lib/site-path";
 import { useRef } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -68,7 +69,7 @@ export function HomeReviews() {
               >
                 {partnerLogos.map((file, index) => (
                   <img
-                    src={`/assets/${file}`}
+                    src={sitePath(`/assets/${file}`)}
                     key={`${file}-${index}`}
                     aria-hidden={index >= 3 ? true : undefined}
                     alt={
@@ -120,7 +121,7 @@ export function HomeReviews() {
             <article className="home-review" key={review.author}>
               <div className="home-review-portrait">
                 <img
-                  src={`/assets/${review.image}`}
+                  src={sitePath(`/assets/${review.image}`)}
                   alt=""
                   width={120}
                   height={120}

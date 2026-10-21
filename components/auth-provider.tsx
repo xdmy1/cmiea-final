@@ -1,4 +1,5 @@
 "use client";
+import { sitePath } from "@/lib/site-path";
 
 import {
   createContext,
@@ -57,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
   async function logout() {
     await signOut(firebaseClient().auth);
-    location.assign("/home/");
+    location.assign(sitePath("/home/"));
   }
   return <AuthContext value={{ ...state, logout }}>{children}</AuthContext>;
 }

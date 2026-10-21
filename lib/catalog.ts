@@ -1,3 +1,4 @@
+import { sitePath } from "./site-path.ts";
 export type Course = {
   id: string;
   name?: string;
@@ -49,24 +50,25 @@ export function filterCourses(
   );
 }
 export function safeImage(image?: string) {
-  if (!image) return "/assets/course-img.png";
-  if (image.startsWith("assets/")) return "/" + image;
-  if (/^(https?:\/\/|\/assets\/|\/formatori\/)/i.test(image)) return image;
-  return "/assets/course-img.png";
+  if (!image) return sitePath("/assets/course-img.png");
+  if (image.startsWith("assets/")) return sitePath("/" + image);
+  if (/^(https?:\/\/|\/assets\/|\/formatori\/)/i.test(image))
+    return sitePath(image);
+  return sitePath("/assets/course-img.png");
 }
 const shortMonths: Record<string, string> = {
-  ianuarie: "ian",
-  februarie: "feb",
-  martie: "mar",
-  aprilie: "apr",
-  mai: "mai",
-  iunie: "iun",
-  iulie: "iul",
-  august: "aug",
-  septembrie: "sept",
-  octombrie: "oct",
-  noiembrie: "nov",
-  decembrie: "dec",
+  ianuarie: "Ian",
+  februarie: "Feb",
+  martie: "Mar",
+  aprilie: "Apr",
+  mai: "Mai",
+  iunie: "Iun",
+  iulie: "Iul",
+  august: "Aug",
+  septembrie: "Sept",
+  octombrie: "Oct",
+  noiembrie: "Nov",
+  decembrie: "Dec",
 };
 export function formatCoursePeriod(value?: string) {
   if (!value?.trim()) return "Perioadă neanunțată";

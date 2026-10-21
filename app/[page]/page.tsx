@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { CourseCatalog } from "@/components/course-catalog";
 import { CommunityCatalog } from "@/components/community-catalog";
 import { NewsPage } from "@/components/news-page";
+import { AboutPage } from "@/components/about-page";
 import { AdminWorkspace } from "@/components/admin-workspace";
 import { LegacyView } from "@/components/legacy-view";
 import { ProtectedView } from "@/components/protected-view";
@@ -64,6 +65,7 @@ export default async function Page({
     );
   let content;
   if (page === "noutati") content = <NewsPage />;
+  else if (page === "despre") content = <AboutPage />;
   else if (page === "cursuri")
     content = (
       <main>

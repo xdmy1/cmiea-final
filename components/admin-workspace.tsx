@@ -1,4 +1,6 @@
 "use client";
+import { sitePath } from "@/lib/site-path";
+
 import { useCallback, useState } from "react";
 import {
   ArrowUpRight,
@@ -10,13 +12,15 @@ import {
 import { adminSections, type AdminSection } from "@/lib/navigation";
 import type { LegacyDocument } from "@/lib/legacy";
 import { LegacyView } from "./legacy-view";
+import { AdminTeamEditor } from "./admin-team-editor";
+import { AdminDialogBehavior } from "./admin-dialog-behavior";
 
 export function AdminWorkspace({ document }: { document: LegacyDocument }) {
   const [active, setActive] = useState<AdminSection>("course");
   const [ready, setReady] = useState(false);
   function select(id: AdminSection) {
     setActive(id);
-    window.showSection?.(id);
+    if (id !== "team") window.showSection?.(id);
     history.replaceState(null, "", `#${id}`);
   }
   const booted = useCallback(() => {
@@ -26,10 +30,11 @@ export function AdminWorkspace({ document }: { document: LegacyDocument }) {
       : "course";
     setActive(initial);
     setReady(true);
-    window.showSection?.(initial);
+    if (initial !== "team") window.showSection?.(initial);
   }, []);
   return (
     <main className="admin-workspace">
+      <AdminDialogBehavior ready={ready} />
       <aside className="admin-sidebar" aria-label="Secțiuni de administrare">
         <div className="admin-sidebar-title">
           <span>CMIEA</span>
@@ -62,7 +67,7 @@ export function AdminWorkspace({ document }: { document: LegacyDocument }) {
               ))}
           </div>
         ))}
-        <a className="admin-back" href="/home/">
+        <a className="admin-back" href={sitePath("/home/")}>
           Vezi site-ul <ArrowUpRight size={16} />
         </a>
       </aside>
@@ -90,7 +95,10 @@ export function AdminWorkspace({ document }: { document: LegacyDocument }) {
             ))}
           </select>
         </label>
-        <LegacyView document={document} page="admin" onReady={booted} />
+        {active === "team" ? <AdminTeamEditor /> : null}
+        <div hidden={active === "team"}>
+          <LegacyView document={document} page="admin" onReady={booted} />
+        </div>
       </div>
     </main>
   );

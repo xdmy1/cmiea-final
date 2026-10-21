@@ -3,6 +3,7 @@ node_modules/
 .next-build/
 out/
 public/assets/
+public/
 public/formatori/
 public/js/
 public/css/

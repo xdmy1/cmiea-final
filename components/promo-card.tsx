@@ -1,3 +1,4 @@
+import { sitePath } from "@/lib/site-path";
 // This card keeps the original content, desktop/mobile layouts and classes.
 export function PromoCard() {
   return (
@@ -9,13 +10,17 @@ export function PromoCard() {
             <span className="text-main dark:text-maindark">viitorul</span> tău
             începe aici
           </p>
-          <img src="/assets/image-more.png" className="rounded-xl" alt="" />
+          <img
+            src={sitePath("/assets/image-more.png")}
+            className="rounded-xl"
+            alt=""
+          />
           <p className="text-sur text-sm">
             Un pas mai aproape de viitorul tău. Educația corectă, oportunitățile
             potrivite.
           </p>
           <a
-            href="/despre/"
+            href={sitePath("/despre/")}
             className="bg-main dark:bg-maindark text-white px-5 py-2 rounded-xl w-[200px]"
           >
             Află mai multe
@@ -32,14 +37,14 @@ export function PromoCard() {
               oportunitățile potrivite.
             </p>
             <a
-              href="/despre/"
+              href={sitePath("/despre/")}
               className="bg-main dark:bg-maindark text-lg text-white px-5 py-2 rounded-xl w-[200px] mt-6 text-center"
             >
               Află mai multe
             </a>
           </div>
           <img
-            src="/assets/image-more.png"
+            src={sitePath("/assets/image-more.png")}
             className="rounded-xl w-[400px]"
             alt="imagine-principala"
           />

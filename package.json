@@ -9,7 +9,9 @@
     "build": "npm run prepare:assets && next build && node scripts/finish-export.mjs",
     "check": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
-    "news:refresh": "node scripts/import-public-news.mjs"
+    "news:refresh": "node scripts/import-public-news.mjs",
+    "preview:build": "NEXT_PUBLIC_BASE_PATH=/cmiea-preview npm run build && NEXT_PUBLIC_BASE_PATH=/cmiea-preview node scripts/verify-export.mjs",
+    "preview:publish": "node scripts/publish-preview.mjs"
   },
   "engines": {
     "node": ">=22"

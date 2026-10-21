@@ -1,62 +1,50 @@
 [
   {
-    "id": "69405",
-    "title": "Creativitate din materiale reciclate",
-    "summary": "Ateliere practice la CMIEA despre transformarea cartonului și a materialelor casnice în decorațiuni și obiecte creative.",
-    "publishedAt": "2026-10-16T05:35:01+00:00",
-    "image": "/assets/news/69405.jpg",
-    "url": "https://t.me/Primaria_Chisinau/69405",
-    "sourceName": "Primăria Chișinău",
-    "platform": "Telegram"
+    "id": "echilibru-profesional-2026",
+    "title": "Mai mult echilibru în viața profesională",
+    "summary": "La CMIEA, psihologa Olga Colodin propune un training despre prevenirea epuizării profesionale, gestionarea stresului și echilibrul personal. Întâlnirile sunt anunțate pentru 10 și 17 octombrie, între 11:00 și 14:00.",
+    "category": "Cursuri",
+    "publishedAt": "2026-10-09",
+    "image": "/assets/news/echilibru-profesional-2026.jpg",
+    "url": "https://www.facebook.com/Pretura.sectorului.riscani/posts/pfbid08kbUEgSaWWpgkePj9bemNvHxgMDndFYLDofCJVTkSBBEFde17r6je9PiLoDUcu9Yl",
+    "sourceUrl": "https://rascani.md/primaria-chisinau-informeaza-despre-organizarea-unui-training-practic-in-cadrul-centrului-municipal-de-invatare-si-ed",
+    "sourceName": "Pretura sectorului Rîșcani",
+    "platform": "Facebook"
   },
   {
-    "id": "69144",
-    "title": "O nouă viață pentru hainele vechi",
-    "summary": "Două întâlniri cu Victoria Macovei: tehnica kinusaiga și realizarea florilor decorative din denim.",
-    "publishedAt": "2026-10-12T08:20:32+00:00",
-    "image": "/assets/news/69144.jpg",
-    "url": "https://t.me/Primaria_Chisinau/69144",
-    "sourceName": "Primăria Chișinău",
-    "platform": "Telegram"
-  },
-  {
-    "id": "69125",
-    "title": "Învață să construiești experiențe turistice",
-    "summary": "Radu Țurcan prezintă alegerea temelor, construirea traseelor și valorificarea patrimoniului în cadrul unui curs practic.",
-    "publishedAt": "2026-10-12T05:37:35+00:00",
-    "image": "/assets/news/69125.jpg",
-    "url": "https://t.me/Primaria_Chisinau/69125",
-    "sourceName": "Primăria Chișinău",
-    "platform": "Telegram"
-  },
-  {
-    "id": "69040",
-    "title": "Echilibru în viața profesională",
-    "summary": "Training cu psihologa Olga Colodin despre recunoașterea epuizării profesionale, gestionarea stresului și echilibrul personal.",
-    "publishedAt": "2026-10-09T07:30:27+00:00",
-    "image": "/assets/news/69040.jpg",
-    "url": "https://t.me/Primaria_Chisinau/69040",
-    "sourceName": "Primăria Chișinău",
-    "platform": "Telegram"
-  },
-  {
-    "id": "68935",
-    "title": "O lună de întâlniri în comunitate",
-    "summary": "Programul din octombrie reunește 14 ședințe gratuite ale cluburilor de interes CMIEA, în mai multe domenii.",
-    "publishedAt": "2026-10-05T06:32:30+00:00",
+    "id": "cluburile-cmiea-octombrie-2026",
+    "title": "Octombrie în cluburile CMIEA",
+    "summary": "Programul lunii reunește 14 întâlniri gratuite ale cluburilor de interes: de la leadership și creativitate până la sănătate, nutriție și tehnologie. Anunțul include și formularul de înregistrare.",
+    "category": "Cluburi",
+    "publishedAt": "2026-10-05",
     "image": "/assets/news/68935.jpg",
-    "url": "https://t.me/Primaria_Chisinau/68935",
-    "sourceName": "Primăria Chișinău",
-    "platform": "Telegram"
+    "url": "https://www.facebook.com/Pretura.sectorului.riscani/posts/pfbid02E2pKYKysBuHKag666Zq7H9vuB4KUJV3B9CTPaV2TmtV18iAG48B9taF97JDXsv3Nl",
+    "sourceUrl": "https://rascani.md/primaria-chisinau-informeaza-ca-in-luna-octombrie-centrul-municipal-de-invatare-si-educatie-a-adultilor-organizeaza",
+    "sourceName": "Pretura sectorului Rîșcani",
+    "platform": "Facebook"
   },
   {
-    "id": "68802",
-    "title": "Comunicare și negociere în carieră",
-    "summary": "Curs practic cu Felicia Pascăluță, dedicat argumentării și negocierii salariului, responsabilităților și condițiilor de muncă.",
-    "publishedAt": "2026-10-01T06:49:58+00:00",
-    "image": "/assets/news/68802.jpg",
-    "url": "https://t.me/Primaria_Chisinau/68802",
-    "sourceName": "Primăria Chișinău",
-    "platform": "Telegram"
+    "id": "competente-pentru-cariera-2026",
+    "title": "Competențe pentru carieră și angajare",
+    "summary": "Un curs cu Veronela Pruteanu în cadrul Spațiului Sigur pentru Femei și Fete, dedicat abilităților necesare pentru integrarea și dezvoltarea pe piața muncii. Activitățile au loc la CMIEA, pe strada Matei Basarab 14.",
+    "category": "Cursuri",
+    "publishedAt": "2026-07-14",
+    "image": "",
+    "url": "https://www.facebook.com/Pretura.sectorului.riscani/posts/pfbid02YYCLhiYhcmtgs8xdqZNaaN7616ZiQp29pMjBxbJZMd8aio2UwQFZUnWqMA7c5p77l",
+    "sourceUrl": "https://rascani.md/primaria-chisinau-prin-centrul-municipal-de-invatare-si-educatie-a-adultilor-organizeaza-un-nou-sir-de-activitati-gr",
+    "sourceName": "Pretura sectorului Rîșcani",
+    "platform": "Facebook"
+  },
+  {
+    "id": "ziua-usilor-deschise-2025",
+    "title": "O zi de descoperiri la CMIEA",
+    "summary": "Ziua Ușilor Deschise din 13 decembrie 2025 a adus prezentări și sesiuni practice de artă, tehnologie, sănătate și dezvoltare personală. O privire asupra activităților pe care le poți descoperi în comunitate.",
+    "category": "Evenimente",
+    "publishedAt": "2025-12-12",
+    "image": "/assets/events/ziua-usilor-deschise-2025.webp",
+    "url": "https://www.facebook.com/Pretura.sectorului.riscani/posts/pfbid02SGjXQoJMyS4gB2QcqMtqhqVhBAtuSLkUnquVNBh2ziRxRTLj35tM4SHpB378tMf5l",
+    "sourceUrl": "https://rascani.md/ziua-usilor-deschise-la-centrul-municipal-de-invatare-si-educatie-a-adultilor-cmiea-cand-13-decembrie-2025-ora-1",
+    "sourceName": "Pretura sectorului Rîșcani",
+    "platform": "Facebook"
   }
 ]

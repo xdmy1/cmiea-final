@@ -1,8 +1,14 @@
-import { cp, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, readdir, writeFile, rm } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { routes } from "./routes.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+if (basePath && !/^\/[a-zA-Z0-9_-]+$/.test(basePath))
+  throw new Error("Invalid preview base path");
+// This directory is entirely generated. Start clean so stale copies cannot
+// increase the deployment size or carry a domain file into the preview.
+await rm(root + "public", { recursive: true, force: true });
 await mkdir(root + "public/legacy", { recursive: true });
 for (const directory of ["assets", "formatori", "css", "js"]) {
   await cp(root + directory, root + "public/" + directory, {
@@ -37,13 +43,34 @@ for (const entry of await readdir(root + "js", { withFileTypes: true })) {
       "showSection(['course','events','clubs','enrollment','eventRegistrations','clubRegistrations','users'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'course');",
     );
   }
+  if (basePath) {
+    const names = [
+      ...Object.keys(routes),
+      "assets",
+      "formatori",
+      "faq\\.json",
+      "cursuri\\.json",
+    ].join("|");
+    code = code.replace(
+      new RegExp(
+        `(["'\x60])/(?!/|${basePath.slice(1)}/)(${names})(?=[/?#"'\x60])`,
+        "g",
+      ),
+      `$1${basePath}/$2`,
+    );
+  }
   await writeFile(root + "public/legacy/js/" + entry.name, code);
 }
-for (const file of ["cursuri.json", "faq.json", "CNAME"])
+for (const file of ["cursuri.json", "faq.json"])
   await cp(root + file, root + "public/" + file);
+if (basePath) {
+  await rm(root + "public/CNAME", { force: true });
+  // Generated iCloud/Finder conflict copies must never ship as domain files.
+  await rm(root + "public/CNAME 2", { force: true });
+} else await cp(root + "CNAME", root + "public/CNAME");
 await writeFile(root + "public/.nojekyll", "");
 for (const [route, file] of Object.entries(routes)) {
-  const target = `/${route}/`;
+  const target = `${basePath}/${route}/`;
   await writeFile(
     root + "public/" + file,
     `<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>CMIEA</title><link rel="canonical" href="${target}"><script>location.replace(${JSON.stringify(target)}+location.search+location.hash)</script><noscript><meta http-equiv="refresh" content="0;url=${target}"></noscript></head><body><a href="${target}">Continuă către CMIEA</a></body></html>`,

@@ -1,4 +1,5 @@
 "use client";
+import { sitePath } from "@/lib/site-path";
 
 import { useEffect, useState } from "react";
 import type { LegacyDocument, LegacyScript } from "@/lib/legacy";
@@ -16,7 +17,7 @@ function loadScript(script: LegacyScript) {
     const element = document.createElement("script");
     if (script.module) element.type = "module";
     if (script.src) {
-      element.src = script.src;
+      element.src = sitePath(script.src);
       element.onload = () => resolve();
       element.onerror = () =>
         reject(new Error("Nu s-a putut încărca formularul."));

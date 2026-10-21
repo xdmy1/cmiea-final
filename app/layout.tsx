@@ -1,7 +1,10 @@
+import { sitePath } from "@/lib/site-path";
 import type { Metadata } from "next";
 import { AuthProvider } from "@/components/auth-provider";
 import "./globals.css";
 import "@phosphor-icons/web/regular";
+import "@phosphor-icons/web/fill";
+import "@phosphor-icons/web/bold";
 
 export const metadata: Metadata = {
   title: { default: "CMIEA — Educație pentru fiecare", template: "%s — CMIEA" },
@@ -15,8 +18,8 @@ export default function RootLayout({
   return (
     <html lang="ro" suppressHydrationWarning>
       <head>
-        <base href="/" />
-        <link rel="icon" href="/assets/icon.ico" />
+        <base href={sitePath("/")} />
+        <link rel="icon" href={sitePath("/assets/icon.ico")} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

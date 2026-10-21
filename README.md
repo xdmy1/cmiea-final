@@ -32,19 +32,19 @@ npm run build
 
 Homepage-ul, listele de cursuri/evenimente/cluburi, noutățile, navigarea și panoul de navigare admin sunt componente React. Formularele de autentificare, înregistrare, înscriere și editare admin păstrează logica Firebase existentă, într-o zonă izolată de componentele React.
 
-Pagina individuală de curs este servită integral la `/curs/?id=...`. Fișierele originale `curs.html` și `js/curs.js` sunt păstrate nemodificate. Pagina „Cursuri” păstrează structura inițială, cu corecturile cerute pentru carduri și șase cursuri pe pagină.
+Pagina individuală de curs este afișată la `/curs/?id=...`, cu navigarea comună, lățime consecventă și logica de înscriere existentă. Fișierele sursă `curs.html` și `js/curs.js` sunt păstrate; adaptorul pregătește prezentarea pentru React. Pagina „Cursuri” păstrează structura inițială, cu corecturile cerute pentru carduri și șase cursuri pe pagină.
 
 ## Noutăți
 
-Încorporarea publică a paginii Facebook a returnat numai antetul, fără postări. Noutățile inițiale sunt anunțuri publice CMIEA republicate pe canalul oficial al Primăriei Chișinău; sursa este indicată pe fiecare card. Nu sunt prezentate ca un feed Facebook automat.
+Feedul social afișează o selecție de postări Facebook despre CMIEA. Linkurile originale sunt verificate prin republicările publice ale Preturii Rîșcani; fiecare postare își păstrează autorul real. Textele sunt rezumate editoriale, iar imaginile disponibile sunt păstrate local. Nu este o sincronizare automată a paginii Facebook CMIEA.
 
-Pentru alte postări selectate, se pot adăuga în `content/news.json` titlul, rezumatul, imaginea, data, linkul original și numele sursei. Nu este necesar acces administrativ la Facebook pentru a publica aceste carduri în site. Imaginile se păstrează în `assets/news/`.
+Selecția se află în `content/facebook-sources.json`. Comanda `npm run news:refresh` verifică și reimportă postările în `content/news.json`; buildul folosește datele locale.
 
-```sh
-npm run news:refresh
-```
+## Administrarea conținutului
 
-Comanda de mai sus reimportă selecția explicită din `scripts/import-public-news.mjs`. Build-ul obișnuit folosește fișierele locale și nu depinde de disponibilitatea rețelelor sociale.
+Secțiunea „Echipă și funcții” permite administratorilor existenți să actualizeze persoanele, ordinea lor, fotografiile prin URL și mesajul echipei. Conținutul este salvat în documentul Firestore `siteContent/team`; pagina Despre noi urmărește actualizările. Dacă documentul nu există, sunt folosite datele inițiale din `content/team.json`. Regula adăugată în proiect permite citirea publică și scrierea prin funcția existentă `isAdmin()`.
+
+Formularele pentru cursuri, evenimente și cluburi păstrează câmpurile și salvarea Firebase, cu secțiuni clare și acțiuni vizibile permanent. Încărcarea fotografiilor din fișiere este amânată; sunt disponibile linkurile către imagini.
 
 ## Evenimente încheiate
 
@@ -54,4 +54,14 @@ Arhiva din `content/events.json` se afișează alături de evenimentele Firebase
 
 ## Publicare
 
-Workflow-ul `Verify Next.js site` verifică testele, tipurile și build-ul. Nu publică site-ul. Pentru GitHub Pages, directorul `out/` trebuie publicat printr-un workflow de deployment sau printr-o ramură de publicare; simpla publicare a surselor Next.js nu execută aplicația.
+Workflow-ul `Verify Next.js site` verifică testele, tipurile și buildul. Site-ul de producție folosește în continuare ramura `main` și domeniul `cmiea.md`.
+
+Pentru preview-ul separat GitHub Pages:
+
+```sh
+npm run preview:build
+npm run preview:publish
+npm run prepare:assets
+```
+
+Preview-ul este construit pentru `/cmiea-preview`, fără CNAME. Scriptul publică exclusiv artefactul static într-un repository personal `cmiea-preview`, pe ramura `preview`, folosind autentificarea Git existentă. Nu publică sursele sau fișierele de mediu și nu schimbă setările Pages ale repository-ului original. După build, ultima comandă reface resursele pentru serverul local de la rădăcină.

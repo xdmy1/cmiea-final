@@ -22,6 +22,7 @@ export const adminSections = [
   { id: "course", label: "Cursuri", group: "Conținut" },
   { id: "events", label: "Evenimente", group: "Conținut" },
   { id: "clubs", label: "Cluburi", group: "Conținut" },
+  { id: "team", label: "Echipă și funcții", group: "Conținut" },
   { id: "enrollment", label: "Cereri la cursuri", group: "Înscrieri" },
   {
     id: "eventRegistrations",

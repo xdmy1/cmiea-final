@@ -1,9 +1,12 @@
 import { readFile } from "node:fs/promises";
 import { load } from "cheerio";
+import { prepareAdminForms } from "./admin-forms.ts";
+import { sitePath } from "./site-path.ts";
 
 export type LegacyScript = { src?: string; code?: string; module?: boolean };
 export type LegacyDocument = { html: string; scripts: LegacyScript[] };
 const pages = new Set([
+  "curs",
   "despre",
   "contact",
   "eveniment",
@@ -57,6 +60,19 @@ export async function legacyDocument(page: string): Promise<LegacyDocument> {
       .filter((_, element) => $(element).find("#admin-menu-toggle").length > 0)
       .remove();
     $("#courseSection").parent().attr("class", "legacy-admin-content");
+    prepareAdminForms($);
+  }
+  if (page === "curs") {
+    $("#course-details-container")
+      .parent()
+      .attr("class", "app-container course-detail-hero");
+    $("#learn-section, #desktop-schedule, #faq-container").each(
+      (_, element) => {
+        $(element)
+          .closest("section")
+          .attr("class", "app-container course-detail-section");
+      },
+    );
   }
   $("a[href]").each((_, element) => {
     const link = $(element);
@@ -67,6 +83,16 @@ export async function legacyDocument(page: string): Promise<LegacyDocument> {
         "href",
         `/${match[1] === "index" ? "home" : match[1]}/${match[2] || ""}`,
       );
+  });
+  $("[href], [src], [srcset], form[action]").each((_, element) => {
+    const node = $(element);
+    for (const attribute of ["href", "src", "srcset", "action"]) {
+      let value = node.attr(attribute);
+      if (!value) continue;
+      if (/^(?:\.\.\/|\.\/)?(?:assets|formatori)\//.test(value))
+        value = "/" + value.replace(/^(?:\.\.\/|\.\/)/, "");
+      if (value.startsWith("/")) node.attr(attribute, sitePath(value));
+    }
   });
   const html = $("body").html() || "";
   return { html, scripts };

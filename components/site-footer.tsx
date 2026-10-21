@@ -1,3 +1,4 @@
+import { sitePath } from "@/lib/site-path";
 import { ArrowUpRight } from "lucide-react";
 import { facebookPage } from "@/lib/navigation";
 
@@ -6,7 +7,7 @@ export function SiteFooter() {
     <footer className="app-footer">
       <div className="app-container footer-grid">
         <div>
-          <a className="footer-brand" href="/home/">
+          <a className="footer-brand" href={sitePath("/home/")}>
             CMIEA
           </a>
           <p>
@@ -20,24 +21,24 @@ export function SiteFooter() {
         </div>
         <div>
           <h2>Descoperă</h2>
-          <a href="/cursuri/">Cursuri</a>
-          <a href="/evenimente/">Evenimente</a>
-          <a href="/cluburi/">Cluburi</a>
-          <a href="/noutati/">Noutăți</a>
+          <a href={sitePath("/cursuri/")}>Cursuri</a>
+          <a href={sitePath("/evenimente/")}>Evenimente</a>
+          <a href={sitePath("/cluburi/")}>Cluburi</a>
+          <a href={sitePath("/noutati/")}>Noutăți</a>
         </div>
         <div>
           <h2>Despre CMIEA</h2>
-          <a href="/despre/">Despre noi</a>
-          <a href="/contact/">Contacte</a>
-          <a href="/register/">Creează cont</a>
+          <a href={sitePath("/despre/")}>Despre noi</a>
+          <a href={sitePath("/contact/")}>Contacte</a>
+          <a href={sitePath("/register/")}>Creează cont</a>
         </div>
       </div>
       <div className="app-container footer-bottom">
         <span>© 2026 CMIEA</span>
         <div>
-          <a href="/termeni/">Termeni și condiții</a>
-          <a href="/confidentialitate/">Confidențialitate</a>
-          <a href="/cookies/">Cookies</a>
+          <a href={sitePath("/termeni/")}>Termeni și condiții</a>
+          <a href={sitePath("/confidentialitate/")}>Confidențialitate</a>
+          <a href={sitePath("/cookies/")}>Cookies</a>
         </div>
       </div>
     </footer>

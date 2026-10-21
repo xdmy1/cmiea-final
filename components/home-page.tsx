@@ -1,3 +1,4 @@
+import { sitePath } from "@/lib/site-path";
 import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "./site-header";
 import { SiteFooter } from "./site-footer";
@@ -41,10 +42,10 @@ export function HomePage() {
           <picture>
             <source
               media="(max-width: 600px)"
-              srcSet="/assets/home-phone.png"
+              srcSet={sitePath("/assets/home-phone.png")}
             />
             <img
-              src="/assets/home-pc.png"
+              src={sitePath("/assets/home-pc.png")}
               alt="Învățare și oportunități pentru adulți la CMIEA"
               fetchPriority="high"
             />

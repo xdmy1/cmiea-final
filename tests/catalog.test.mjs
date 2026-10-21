@@ -46,17 +46,17 @@ test("search and all course filters apply together without changing source data"
 test("every Romanian month is abbreviated while years and periods are retained", () => {
   assert.equal(
     formatCoursePeriod("Februarie - Aprilie 2027"),
-    "feb - apr 2027",
+    "Feb - Apr 2027",
   );
   assert.equal(
     formatCoursePeriod(
       "IANUARIE Februarie Martie Aprilie Mai Iunie Iulie August Septembrie Octombrie Noiembrie Decembrie",
     ),
-    "ian feb mar apr mai iun iul aug sept oct nov dec",
+    "Ian Feb Mar Apr Mai Iun Iul Aug Sept Oct Nov Dec",
   );
   assert.equal(
     formatCoursePeriod("decembrie 2026 – ianuarie 2027"),
-    "dec 2026 – ian 2027",
+    "Dec 2026 – Ian 2027",
   );
   assert.equal(formatCoursePeriod(""), "Perioadă neanunțată");
 });

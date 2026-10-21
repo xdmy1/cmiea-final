@@ -1,4 +1,5 @@
 "use client";
+import { sitePath } from "@/lib/site-path";
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -53,7 +54,7 @@ export function SiteHeader() {
   const navLink = ({ href, label }: { href: string; label: string }) => (
     <a
       key={href}
-      href={href}
+      href={sitePath(href)}
       aria-current={isActive(href) ? "page" : undefined}
     >
       {label}
@@ -68,7 +69,7 @@ export function SiteHeader() {
         <ChevronDown size={14} />
       </summary>
       <div className="site-account-menu">
-        <a href={isAdmin ? "/admin/" : "/dashboard/"}>
+        <a href={sitePath(isAdmin ? "/admin/" : "/dashboard/")}>
           {isAdmin ? "Administrare" : "Contul meu"}
         </a>
         <button onClick={() => void logout()}>Deconectare</button>
@@ -76,10 +77,10 @@ export function SiteHeader() {
     </details>
   ) : (
     <div className="site-auth-buttons">
-      <a href="/login/" className="site-login">
+      <a href={sitePath("/login/")} className="site-login">
         Autentificare
       </a>
-      <a href="/register/" className="site-signup">
+      <a href={sitePath("/register/")} className="site-signup">
         Creează cont
       </a>
     </div>
@@ -89,11 +90,16 @@ export function SiteHeader() {
       <header className="site-header">
         <nav className="site-nav" aria-label="Navigare principală">
           <a
-            href="/home/"
+            href={sitePath("/home/")}
             className="site-brand"
             aria-label="CMIEA — pagina principală"
           >
-            <img src="/assets/icon.png" width={36} height={36} alt="" />
+            <img
+              src={sitePath("/assets/icon.png")}
+              width={36}
+              height={36}
+              alt=""
+            />
             <span>CMIEA</span>
           </a>
           <div className="site-nav-links">
@@ -196,7 +202,7 @@ function CommunityMenu({ active }: { active: boolean }) {
       </summary>
       <div className="site-community-menu">
         {community.map((item) => (
-          <a key={item.href} href={item.href}>
+          <a key={item.href} href={sitePath(item.href)}>
             <strong>
               {item.label}
               <ArrowUpRight size={14} />
