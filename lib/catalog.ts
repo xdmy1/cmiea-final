@@ -1,3 +1,4 @@
+import { normalizeCommunityItem } from "./community-records.ts";
 import { sitePath } from "./site-path.ts";
 export type Course = {
   id: string;
@@ -50,7 +51,13 @@ export function filterCourses(
   );
 }
 export function safeImage(image?: string) {
-  if (!image) return sitePath("/assets/course-img.png");
+  if (typeof image !== "string" || !image)
+    return sitePath("/assets/course-img.png");
+  if (
+    image.startsWith(sitePath("/assets/")) ||
+    image.startsWith(sitePath("/formatori/"))
+  )
+    return image;
   if (image.startsWith("assets/")) return sitePath("/" + image);
   if (/^(https?:\/\/|\/assets\/|\/formatori\/)/i.test(image))
     return sitePath(image);
@@ -80,13 +87,20 @@ export function formatCoursePeriod(value?: string) {
     );
 }
 export function eventStatus(item: CommunityItem, now = Date.now()) {
-  const start = Date.parse(item.startDate || "");
-  const end = Date.parse(item.endDate || item.startDate || "");
+  const normalized = normalizeCommunityItem(item);
+  const start = Date.parse(normalized.startDate);
+  const end = Date.parse(normalized.endDate || normalized.startDate);
   if (!Number.isFinite(start)) return "unknown";
   return now > end ? "past" : now >= start ? "ongoing" : "upcoming";
 }
 
 export function mergeEvents(live: CommunityItem[], archive: CommunityItem[]) {
+  live = live
+    .map((item) => normalizeCommunityItem(item))
+    .filter((item) => item.id);
+  archive = archive
+    .map((item) => normalizeCommunityItem(item))
+    .filter((item) => item.id);
   const eventKey = (item: CommunityItem) =>
     `${(item.title || item.name || "").trim().toLocaleLowerCase("ro")}::${(item.startDate || "").slice(0, 10)}`;
   const liveIds = new Set(live.map((item) => item.id));

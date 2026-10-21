@@ -89,11 +89,16 @@ async function getApprovedEventRegistrationsCount(eventId) {
     }
 }
 
+// Firestore records can use timestamps as well as ISO strings.
+function getEventDate(value) {
+    return new Date(value && typeof value.toDate === 'function' ? value.toDate() : value);
+}
+
 // Get event status based on dates
 function getEventStatus(startDate, endDate) {
     const now = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate || startDate);
+    const start = getEventDate(startDate);
+    const end = getEventDate(endDate || startDate);
     
     if (now < start) return 'upcoming';
     if (now >= start && now <= end) return 'ongoing';
@@ -102,13 +107,15 @@ function getEventStatus(startDate, endDate) {
 
 // Format date for display
 function formatEventDate(dateString) {
-    const date = new Date(dateString);
+    const date = getEventDate(dateString);
+    if (!Number.isFinite(date.getTime())) return 'Dată de anunțat';
     const options = { 
         year: 'numeric', 
         month: 'long', 
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: 'Europe/Chisinau'
     };
     return date.toLocaleDateString('ro-RO', options);
 }
@@ -117,9 +124,10 @@ function formatEventDate(dateString) {
 function formatEventDuration(startDate, endDate) {
     if (!endDate) return null;
     
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    const start = getEventDate(startDate);
+    const end = getEventDate(endDate);
     const diffMs = end - start;
+    if (!Number.isFinite(diffMs) || diffMs < 0) return null;
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
     
@@ -909,7 +917,7 @@ async function loadRecommendedEvents(currentEventId) {
             if (a.featured && !b.featured) return -1;
             if (!a.featured && b.featured) return 1;
             // Then by date
-            return new Date(a.startDate) - new Date(b.startDate);
+            return getEventDate(a.startDate) - getEventDate(b.startDate);
         });
         
         // Limit to 3 events

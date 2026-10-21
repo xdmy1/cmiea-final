@@ -5,6 +5,9 @@ import { facebookPage } from "@/lib/navigation";
 export function SiteFooter() {
   return (
     <footer className="app-footer">
+      <div className="footer-wordmark" aria-hidden="true">
+        cmiea
+      </div>
       <div className="app-container footer-grid">
         <div>
           <a className="footer-brand" href={sitePath("/home/")}>
