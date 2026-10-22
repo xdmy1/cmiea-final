@@ -275,6 +275,7 @@ function Pagination({
       aria-label={`Pagini de cursuri — ${position}`}
     >
       <button
+        className="app-button secondary"
         disabled={page === 1}
         onClick={(event) => change(page - 1, event.detail === 0)}
       >
@@ -284,6 +285,7 @@ function Pagination({
         {page} / {pages}
       </span>
       <button
+        className="app-button secondary"
         disabled={page === pages}
         onClick={(event) => change(page + 1, event.detail === 0)}
       >

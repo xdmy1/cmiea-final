@@ -1,5 +1,5 @@
 import { sitePath } from "@/lib/site-path";
-// This card keeps the original content, desktop/mobile layouts and classes.
+// Keep the original content and desktop/mobile layouts with shared site buttons.
 export function PromoCard() {
   return (
     <section className="app-container mt-12 dark:text-white">
@@ -19,10 +19,7 @@ export function PromoCard() {
             Un pas mai aproape de viitorul tău. Educația corectă, oportunitățile
             potrivite.
           </p>
-          <a
-            href={sitePath("/despre/")}
-            className="bg-main dark:bg-maindark text-white px-5 py-2 rounded-xl w-[200px]"
-          >
+          <a href={sitePath("/despre/")} className="app-button">
             Află mai multe
           </a>
         </div>
@@ -38,7 +35,7 @@ export function PromoCard() {
             </p>
             <a
               href={sitePath("/despre/")}
-              className="bg-main dark:bg-maindark text-lg text-white px-5 py-2 rounded-xl w-[200px] mt-6 text-center"
+              className="app-button mt-6 self-start"
             >
               Află mai multe
             </a>

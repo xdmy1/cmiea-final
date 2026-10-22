@@ -52,27 +52,52 @@ a {
   padding-top: 112px;
   padding-bottom: 80px;
 }
-.app-button {
+.app-button,
+.site-signup,
+.admin-button-primary,
+.admin-button-secondary {
   min-height: 48px;
   padding: 13px 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
+  border: 0;
   border-radius: 12px;
+  box-shadow: none;
   background: #3542ff;
   color: #fff;
   font-size: 14px;
   font-weight: 500;
-  width: fit-content;
+  line-height: 1.5;
+  text-align: center;
+  max-width: 100%;
 }
-.app-button:hover {
+.app-button:not(:disabled):hover,
+.site-signup:hover,
+.admin-button-primary:not(:disabled):hover {
   background: #2935de;
 }
-.app-button.secondary {
+.app-button.secondary,
+.admin-button-secondary {
   background: var(--site-surface);
   color: var(--site-accent);
-  border: 1px solid var(--site-line);
+  box-shadow: inset 0 0 0 1px var(--site-line);
+}
+.app-button.secondary:not(:disabled):hover,
+.admin-button-secondary:not(:disabled):hover {
+  background: var(--site-bg);
+  box-shadow: inset 0 0 0 1px var(--site-accent);
+}
+.app-button.danger {
+  background: #dc4848;
+  color: #fff;
+}
+.app-button.danger:not(:disabled):hover {
+  background: #bd3030;
+}
+.app-button > :is(svg, i) {
+  flex-shrink: 0;
 }
 .text-link {
   display: inline-flex;
@@ -370,13 +395,6 @@ a {
   gap: 24px;
   margin: 32px 0 0;
   font-size: 13px;
-}
-.catalog-pagination button {
-  border: 1px solid var(--site-line);
-  border-radius: 10px;
-  background: var(--site-surface);
-  padding: 10px 16px;
-  min-height: 44px;
 }
 .page-intro {
   margin-top: 24px;
@@ -734,11 +752,7 @@ a {
   box-shadow: none;
 }
 .legacy-curs #enroll-button {
-  min-height: 48px;
   max-width: 360px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
 }
 .legacy-curs #course-details-container h1 {
   font-size: clamp(32px, 4vw, 52px);

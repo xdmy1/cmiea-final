@@ -85,7 +85,12 @@ export function LegacyView({
       {error ? (
         <p className="catalog-status" role="alert">
           {error}{" "}
-          <button onClick={() => location.reload()}>Reîncarcă pagina</button>
+          <button
+            className="app-button secondary"
+            onClick={() => location.reload()}
+          >
+            Reîncarcă pagina
+          </button>
         </p>
       ) : null}
       <div

@@ -130,7 +130,7 @@ function createSuccessModal(isWaitlist = false) {
                     : 'Cererea ta de înscriere a fost trimisă și va fi revizuită de un administrator în curând.'}
             </p>
             <div class="flex justify-center">
-                <button id="success-modal-close" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 ${isWaitlist ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-600 hover:bg-blue-700'} text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button id="success-modal-close" class="app-button w-full">
                    Am Înțeles
                 </button>
             </div>
@@ -347,7 +347,7 @@ async function renderCourseUI(course) {
                                     </span>
                                 </div>
                         
-                                <button id="enroll-button" class="max-w-[400px] py-3 px-4 rounded-xl text-white transition-all duration-200 text-sm bg-gray-400 cursor-not-allowed" disabled>
+                                <button id="enroll-button" class="app-button max-w-[400px]" disabled>
                                     Înscrie-te acum
                                 </button>
                             </div>

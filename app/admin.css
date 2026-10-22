@@ -185,38 +185,6 @@
   background: var(--site-surface);
   flex-shrink: 0;
 }
-.admin-button-primary,
-.admin-button-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 11px 17px;
-  border-radius: 10px;
-  border: 1px solid var(--site-line);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.4;
-  transition:
-    background-color 150ms ease,
-    border-color 150ms ease;
-}
-.admin-button-primary {
-  background: #3542ff;
-  border-color: #3542ff;
-  color: white;
-}
-.admin-button-primary:hover {
-  background: #2935de;
-}
-.admin-button-secondary {
-  background: var(--site-bg);
-  color: var(--site-text);
-}
-.admin-button-secondary:hover {
-  border-color: var(--site-muted);
-}
 .admin-button-secondary.danger {
   color: #dc4848;
 }

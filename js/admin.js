@@ -693,10 +693,10 @@ function viewUserDetails(userId) {
                         <i class="ph ph-activity mr-2"></i>Acțiuni
                     </h4>
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <button id="emailUserBtn" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-main dark:bg-maindark text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-700">
+                        <button id="emailUserBtn" class="app-button w-full sm:w-auto">
                             <i class="ph ph-envelope mr-2"></i> Trimite Email
                         </button>
-                        <button id="downloadUserDataBtn" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                        <button id="downloadUserDataBtn" class="app-button secondary w-full sm:w-auto">
                             <i class="ph ph-download mr-2"></i> Descarcă Date
                         </button>
                     </div>
@@ -782,10 +782,10 @@ function confirmRemoveUser(userId) {
                 Sunteți sigur că doriți să ștergeți acest utilizator? Această acțiune nu poate fi anulată.
             </p>
             <div class="flex justify-end gap-3">
-                <button id="cancelDeleteUserBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                <button id="cancelDeleteUserBtn" class="app-button secondary">
                     Anulează
                 </button>
-                <button id="confirmDeleteUserBtn" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+                <button id="confirmDeleteUserBtn" class="app-button danger">
                     Șterge
                 </button>
             </div>
@@ -1516,7 +1516,7 @@ function updateEventsSection() {
         eventsSection.innerHTML = `
             <div class="flex flex-col items-start lg:flex-row gap-4 lg:gap-0 justify-between items-center mb-6">
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Admin Panel - Gestionare Evenimente</h1>
-                <button id="addEventBtn" class="bg-main hover:bg-maindark dark:bg-maindark text-white px-4 py-2 rounded-lg flex items-center">
+                <button id="addEventBtn" class="app-button">
                     <i class="ph ph-plus mr-2"></i> Adaugă Eveniment Nou
                 </button>
             </div>

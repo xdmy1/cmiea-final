@@ -74,6 +74,22 @@ export async function legacyDocument(page: string): Promise<LegacyDocument> {
       },
     );
   }
+  // Text actions in the retained forms use the same buttons as React pages.
+  // Keep layout utilities, IDs, handlers and icon controls intact.
+  $("button, a").each((_, element) => {
+    const action = $(element);
+    const classes = action.attr("class") || "";
+    if (
+      !action.text().trim() ||
+      !/(?:^|\s)rounded-(?:md|lg|xl|2xl)(?:\s|$)/.test(classes) ||
+      action.is(".admin-dialog-header > button, td button")
+    )
+      return;
+    action.addClass("app-button");
+    if (/(?:^|\s)bg-red-\d+/.test(classes)) action.addClass("danger");
+    else if (!/(?:^|\s)bg-(?:main|blue-\d+)/.test(classes))
+      action.addClass("secondary");
+  });
   $("a[href]").each((_, element) => {
     const link = $(element);
     const href = link.attr("href") || "";

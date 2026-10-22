@@ -80,7 +80,7 @@ async function loadClubDetails() {
                 <i class="ph ph-warning text-6xl text-yellow-500 mb-4"></i>
                 <h2 class="text-2xl font-bold text-gray-700 dark:text-white mb-2">Eroare la încărcarea clubului</h2>
                 <p class="text-gray-500 dark:text-gray-400 mb-4">Nu s-a putut încărca clubul. Vă rugăm să încercați din nou.</p>
-                <a href="/cluburi.html" class="px-6 py-3 bg-main text-white rounded-lg hover:bg-maindark transition-colors inline-block">
+                <a href="/cluburi.html" class="app-button">
                     Înapoi la Cluburi
                 </a>
             </div>
@@ -124,7 +124,7 @@ function renderClubDetails() {
                     </div>
                 </div>
 
-                <a href="#registration-section" class="mt-8 inline-block w-full sm:w-auto px-8 py-4 bg-main dark:bg-maindark text-white rounded-2xl font-semibold text-lg text-center hover:bg-maindark transition-colors">
+                <a href="#registration-section" class="app-button mt-8 w-full sm:w-auto">
                     Înregistrează-te acum
                 </a>
             </div>

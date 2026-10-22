@@ -133,13 +133,6 @@
 .site-login {
   color: var(--site-muted);
 }
-.site-signup {
-  background: #3542ff;
-  color: white;
-  border-radius: 10px;
-  padding: 11px 16px;
-  font-weight: 500;
-}
 .site-icon-button {
   width: 42px;
   height: 42px;

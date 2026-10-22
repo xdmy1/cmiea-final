@@ -166,7 +166,7 @@ function renderEmptyCourseState() {
                 <i class="ph ph-graduation-cap text-gray-400 dark:text-gray-600 text-2xl"></i>
             </div>
             <p class="text-gray-700 dark:text-gray-300 mb-4">Nu sunteți înscris la niciun curs încă.</p>
-            <a href="/cursuri.html" class="inline-block bg-main dark:bg-maindark text-white px-4 py-2 rounded-lg hover:bg-main/90 dark:hover:bg-maindark/90 transition-colors">
+            <a href="/cursuri.html" class="app-button">
                 Explorează cursurile disponibile
             </a>
         </div>
@@ -242,7 +242,7 @@ async function loadEventRegistrations(user) {
                         <i class="ph ph-calendar-x text-gray-400 dark:text-gray-600 text-2xl"></i>
                     </div>
                     <p class="text-gray-700 dark:text-gray-300 mb-4">Nu aveți înregistrări la evenimente.</p>
-                    <a href="/evenimente.html" class="inline-block bg-main dark:bg-maindark text-white px-4 py-2 rounded-lg hover:bg-main/90 dark:hover:bg-maindark/90 transition-colors">
+                    <a href="/evenimente.html" class="app-button">
                         Explorează evenimentele disponibile
                     </a>
                 </div>
@@ -318,7 +318,7 @@ function renderEventRegistrationsCards(registrations) {
                         <i class="ph ph-calendar-x text-gray-400 dark:text-gray-600 text-2xl"></i>
                     </div>
                     <p class="text-gray-700 dark:text-gray-300 mb-4">Nu aveți înregistrări la evenimente.</p>
-                    <a href="/evenimente.html" class="inline-block bg-main dark:bg-maindark text-white px-4 py-2 rounded-lg hover:bg-main/90 dark:hover:bg-maindark/90 transition-colors">
+                    <a href="/evenimente.html" class="app-button">
                         Explorează evenimentele disponibile
                     </a>
                 </div>
@@ -452,7 +452,7 @@ async function loadClubRegistrations(user) {
                         <i class="ph ph-users-three text-gray-400 dark:text-gray-600 text-2xl"></i>
                     </div>
                     <p class="text-gray-700 dark:text-gray-300 mb-4">Nu aveți înregistrări la cluburi.</p>
-                    <a href="/cluburi.html" class="inline-block bg-main dark:bg-maindark text-white px-4 py-2 rounded-lg hover:bg-main/90 dark:hover:bg-maindark/90 transition-colors">
+                    <a href="/cluburi.html" class="app-button">
                         Explorează cluburile disponibile
                     </a>
                 </div>

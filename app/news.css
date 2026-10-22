@@ -21,9 +21,6 @@
   line-height: 1.7;
   color: var(--site-muted);
 }
-.social-news-heading .app-button {
-  font-size: 13px;
-}
 .social-news-heading .app-button i {
   font-size: 18px;
 }
