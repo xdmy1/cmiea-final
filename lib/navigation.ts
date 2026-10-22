@@ -18,6 +18,7 @@ export const community = [
 ];
 export const facebookPage =
   "https://www.facebook.com/profile.php?id=100091913902284";
+export const telegramGroup = "https://t.me/+03ceuSlIN25mMTky";
 export const adminSections = [
   { id: "course", label: "Cursuri", group: "Conținut" },
   { id: "events", label: "Evenimente", group: "Conținut" },

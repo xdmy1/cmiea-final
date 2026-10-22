@@ -1,4 +1,5 @@
 "use client";
+import { FilterSelect } from "./filter-select";
 import { sitePath } from "@/lib/site-path";
 
 import { useEffect, useRef, useState } from "react";
@@ -177,44 +178,45 @@ export function CourseCatalog({
             </span>
           </label>
         ) : null}
-        <label>
-          {original ? "Categorie:" : "Nivel"}
-          <select
+        <div className="catalog-filter-field">
+          <span>{original ? "Categorie:" : "Nivel"}</span>
+          <FilterSelect
+            label={original ? "Categorie" : "Nivel"}
             value={filters.category}
-            onChange={(event) => change("category", event.target.value)}
-          >
-            <option value="">
-              {original ? "Toate categoriile" : "Toate nivelurile"}
-            </option>
-            {options("categorie").map((value) => (
-              <option key={value}>{value}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Durată
-          <select
+            onChange={(value) => change("category", value)}
+            options={[
+              {
+                value: "",
+                label: original ? "Toate categoriile" : "Toate nivelurile",
+              },
+              ...options("categorie").map((value) => ({ value, label: value })),
+            ]}
+          />
+        </div>
+        <div className="catalog-filter-field">
+          <span>Durată</span>
+          <FilterSelect
+            label="Durată"
             value={filters.duration}
-            onChange={(event) => change("duration", event.target.value)}
-          >
-            <option value="">Toate duratele</option>
-            {options("durata").map((value) => (
-              <option key={value}>{value}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Limbă
-          <select
+            onChange={(value) => change("duration", value)}
+            options={[
+              { value: "", label: "Toate duratele" },
+              ...options("durata").map((value) => ({ value, label: value })),
+            ]}
+          />
+        </div>
+        <div className="catalog-filter-field">
+          <span>Limbă</span>
+          <FilterSelect
+            label="Limbă"
             value={filters.language}
-            onChange={(event) => change("language", event.target.value)}
-          >
-            <option value="">Toate limbile</option>
-            {options("limba").map((value) => (
-              <option key={value}>{value}</option>
-            ))}
-          </select>
-        </label>
+            onChange={(value) => change("language", value)}
+            options={[
+              { value: "", label: "Toate limbile" },
+              ...options("limba").map((value) => ({ value, label: value })),
+            ]}
+          />
+        </div>
       </div>
       {loading ? (
         <p className="catalog-status" role="status">

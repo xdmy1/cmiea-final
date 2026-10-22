@@ -23,8 +23,8 @@ export function PromoCard() {
             Află mai multe
           </a>
         </div>
-        <div className="hidden lg:flex text-center gap-4 items-center justify-between items-start">
-          <div className="flex flex-col justify-between text-start h-full max-w-[450px] gap-4">
+        <div className="hidden lg:flex gap-10 items-center justify-between">
+          <div className="flex flex-col text-start max-w-[450px] gap-4">
             <p className="font-semibold text-5xl">
               Un pas către <span className="text-main">viitorul</span> tău
               începe aici

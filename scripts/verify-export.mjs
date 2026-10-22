@@ -20,6 +20,20 @@ async function visit(directory) {
     }
     if (extname(file) !== ".html") continue;
     const $ = load(await readFile(file, "utf8"));
+    if ($("body.site-page").length) {
+      const isAdmin = file === join("out", "admin", "index.html");
+      const expected = isAdmin ? 0 : 1;
+      if ($("a.telegram-float").length !== expected)
+        failures.push({
+          file,
+          error: "Unexpected number of shared Telegram links",
+        });
+      if ($(".footer-wordmark").length !== expected)
+        failures.push({
+          file,
+          error: "Shared footer is missing or duplicated",
+        });
+    }
     const base = new URL(
       $("base").attr("href") || prefix + "/",
       "https://preview.test",

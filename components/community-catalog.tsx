@@ -10,6 +10,8 @@ import {
   type CommunityItem,
 } from "@/lib/catalog";
 import archivedEvents from "@/content/events.json";
+import { FilterSelect } from "./filter-select";
+import { normalizeCommunityItem } from "@/lib/community-records";
 import { sitePath } from "@/lib/site-path";
 
 export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
@@ -23,31 +25,44 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
     let alive = true;
     setLoading(true);
     setError(false);
-    getDocs(collection(firebaseClient().db, kind))
-      .then((snapshot) => {
+    const timer = setTimeout(() => {
+      if (alive) {
+        setError(true);
+        setLoading(false);
+      }
+    }, 15000);
+    async function load() {
+      try {
+        const snapshot = await getDocs(collection(firebaseClient().db, kind));
         if (!alive) return;
-        const data = snapshot.docs.map(
-          (doc) => ({ ...doc.data(), id: doc.id }) as CommunityItem,
+        const data = snapshot.docs.map((doc) =>
+          normalizeCommunityItem(doc.data(), doc.id),
         );
         if (kind === "clubs")
-          data.sort((a, b) => (a.name || "").localeCompare(b.name || "", "ro"));
+          data.sort((a, b) => a.name.localeCompare(b.name, "ro"));
         setItems(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (alive) {
-          setError(true);
-          setLoading(false);
-        }
-      });
+        setError(false);
+      } catch {
+        if (alive) setError(true);
+      } finally {
+        clearTimeout(timer);
+        if (alive) setLoading(false);
+      }
+    }
+    void load();
     return () => {
       alive = false;
+      clearTimeout(timer);
     };
   }, [kind, retry]);
   const visibleItems =
     kind === "events"
       ? mergeEvents(items, archivedEvents)
-      : items.filter((item) => !item.deleted);
+      : items.filter(
+          (item) =>
+            !item.deleted &&
+            item.name?.trim().toLocaleLowerCase("ro") !== "test",
+        );
   const filtered = visibleItems.filter(
     (item) =>
       (!category || item.category === category) &&
@@ -61,33 +76,36 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
     ),
   ];
   return (
-    <div className="app-container community-catalog">
+    <div className="app-container community-catalog" aria-busy={loading}>
+      {kind === "clubs" ? <ClubUpdate /> : null}
       {kind === "events" ? (
         <div className="catalog-filters">
-          <label>
-            Categorie
-            <select
+          <div className="catalog-filter-field">
+            <span>Categorie</span>
+            <FilterSelect
+              label="Categorie"
               value={category}
-              onChange={(event) => setCategory(event.target.value)}
-            >
-              <option value="">Toate categoriile</option>
-              {categories.map((value) => (
-                <option key={value}>{value}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Perioadă
-            <select
+              onChange={setCategory}
+              options={[
+                { value: "", label: "Toate categoriile" },
+                ...categories.map((value) => ({ value, label: value })),
+              ]}
+            />
+          </div>
+          <div className="catalog-filter-field">
+            <span>Perioadă</span>
+            <FilterSelect
+              label="Perioadă"
               value={status}
-              onChange={(event) => setStatus(event.target.value)}
-            >
-              <option value="">Toate evenimentele</option>
-              <option value="upcoming">Urmează</option>
-              <option value="ongoing">În desfășurare</option>
-              <option value="past">Încheiate</option>
-            </select>
-          </label>
+              onChange={setStatus}
+              options={[
+                { value: "", label: "Toate evenimentele" },
+                { value: "upcoming", label: "Urmează" },
+                { value: "ongoing", label: "În desfășurare" },
+                { value: "past", label: "Încheiate" },
+              ]}
+            />
+          </div>
         </div>
       ) : null}
       {loading && !visibleItems.length ? (
@@ -96,7 +114,7 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
         </p>
       ) : null}
       {error ? (
-        <div className="catalog-status" role="alert">
+        <div className="community-load-error" role="alert">
           <p>
             {visibleItems.length
               ? "Lista actualizată nu s-a putut încărca. Evenimentele din arhivă sunt disponibile mai jos."
@@ -170,6 +188,57 @@ export function CommunityCatalog({ kind }: { kind: "events" | "clubs" }) {
     </div>
   );
 }
+
+function ClubUpdate() {
+  return (
+    <aside className="club-update" aria-labelledby="club-update-title">
+      <div className="club-update-copy">
+        <span className="section-eyebrow">
+          Noutăți din comunitate · octombrie 2026
+        </span>
+        <h2 id="club-update-title">Cluburile de interes CMIEA</h2>
+        <p>
+          Programul publicat pe Facebook anunță 14 ședințe gratuite în
+          octombrie, cu activități de leadership, sănătate, yoga, tehnologie și
+          creație.
+        </p>
+        <div className="club-update-links">
+          <a
+            className="app-button"
+            href="https://forms.gle/Fn6cJ5RGDb7vZfMh7"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Formular de înscriere <ArrowUpRight size={17} />
+          </a>
+          <a
+            className="club-update-source"
+            href="https://www.facebook.com/Pretura.sectorului.riscani/posts/pfbid02E2pKYKysBuHKag666Zq7H9vuB4KUJV3B9CTPaV2TmtV18iAG48B9taF97JDXsv3Nl"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Vezi anunțul pe Facebook <ArrowUpRight size={15} />
+          </a>
+        </div>
+      </div>
+      <a
+        className="club-update-poster-link"
+        href="https://www.facebook.com/Pretura.sectorului.riscani/posts/pfbid02E2pKYKysBuHKag666Zq7H9vuB4KUJV3B9CTPaV2TmtV18iAG48B9taF97JDXsv3Nl"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Deschide afișul programului cluburilor din octombrie pe Facebook"
+      >
+        <img
+          className="club-update-poster"
+          src={sitePath("/assets/news/68935.jpg")}
+          alt="Programul cluburilor CMIEA din octombrie 2026, cu datele și orele întâlnirilor"
+          loading="lazy"
+        />
+      </a>
+    </aside>
+  );
+}
+
 function formatDate(value?: string) {
   const date = new Date(value || "");
   return Number.isFinite(date.getTime())

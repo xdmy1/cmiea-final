@@ -5,6 +5,24 @@ import { load } from "cheerio";
 import { legacyDocument } from "../lib/legacy.ts";
 import { eventStatus } from "../lib/catalog.ts";
 
+test("retained pages leave Telegram to the shared React footer", async () => {
+  for (const page of [
+    "curs",
+    "contact",
+    "club",
+    "eveniment",
+    "login",
+    "register",
+    "dashboard",
+    "termeni",
+    "confidentialitate",
+    "cookies",
+  ]) {
+    const $ = load((await legacyDocument(page)).html);
+    assert.equal($(".telegram-float").length, 0, page);
+  }
+});
+
 test("login and registration retain their head modules, forms and reset dialog", async () => {
   for (const page of ["login", "register", "register-step2"]) {
     const document = await legacyDocument(page);

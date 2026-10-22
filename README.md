@@ -1,6 +1,10 @@
 # CMIEA
 
-Next.js App Router, React și TypeScript, cu export static compatibil cu GitHub Pages. Datele și înscrierile folosesc proiectul Firebase existent.
+Proiect în curs de migrare la Next.js App Router, React și TypeScript, cu export static compatibil cu GitHub Pages. Datele și înscrierile folosesc proiectul Firebase existent.
+
+Migrarea nu este încă integrală: homepage-ul, cataloagele, noutățile, pagina Despre noi și componentele comune sunt React. Detaliile cursurilor/evenimentelor/cluburilor, contactele, paginile legale și formularele de cont/admin încă folosesc HTML-ul și scripturile Firebase originale prin `LegacyView`. Fișierele HTML de la rădăcină sunt surse active ale acestui adaptor.
+
+Repository-ul separat `cmiea-preview` conține numai rezultatul compilării din `out/`. Fișierele HTML publicate acolo sunt generate de Next.js; structura sursă `app/`, `components/`, `lib/` și `public/` se află în acest repository. Folderul opțional `src/` nu este folosit.
 
 ## Pornire locală
 
@@ -65,3 +69,5 @@ npm run prepare:assets
 ```
 
 Preview-ul este construit pentru `/cmiea-preview`, fără CNAME. Scriptul publică exclusiv artefactul static într-un repository personal `cmiea-preview`, pe ramura `preview`, folosind autentificarea Git existentă. Nu publică sursele sau fișierele de mediu și nu schimbă setările Pages ale repository-ului original. După build, ultima comandă reface resursele pentru serverul local de la rădăcină.
+
+Sursele trebuie comise înainte de buildul pentru publicare. `out/build-info.json` identifică revizia compilată; publicarea refuză un build din altă revizie și o ramură care nu include sursele publicate anterior. Astfel, o actualizare dintr-o ramură mai veche nu poate elimina corecturile deja publicate.
