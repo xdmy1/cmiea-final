@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="ro">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,461 +7,346 @@
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 
     <style type="text/tailwindcss">
-    @custom-variant dark (&:where(.dark, .dark *));
-    </style>    
+      @custom-variant dark (&:where(.dark, .dark *));
+    </style>
     <title>Centrul Municipal de Învățare si Educație a Adulților - CMIEA</title>
-    <link rel="icon" href="assets/icon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="assets/icon.ico" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
     <style type="text/tailwindcss">
       @theme {
-        --color-main: #3542FF;
+        --color-main: #31584a;
         --color-light: #f9f9f9;
-        --color-maindark:#4954eb;
+        --color-maindark: #8fc8ad;
         --color-sur: #777878;
-        --color-sur2: #9B9FA9;
+        --color-sur2: #9b9fa9;
         --color-dark: #1c1c1c;
         --color-dark2: #272727;
-        --color-dark3: #3A3A3A;
+        --color-dark3: #3a3a3a;
       }
     </style>
-   <script>
-    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');        document.getElementById('courses-container')?.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        document.documentElement.classList.remove('dark');
-    }
+    <script>
+      if (
+        localStorage.getItem("color-theme") === "dark" ||
+        (!("color-theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     </script>
-    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-    </script>
+    <meta
+      name="description"
+      content="Învață, descoperă și crește alături de CMIEA. Cursuri gratuite pentru adulți, evenimente și o comunitate deschisă în Chișinău."
+    />
+    <link rel="stylesheet" href="css/home.css" />
   </head>
 
-
-  <body class="overflow-x-hidden bg-light dark:bg-[#1c1c1c] ">
-    <div class="fixed z-10 top-0 left-0 right-0 bg-light/90 dark:bg-[#1c1c1c] backdrop-blur w-screen h-16 lg:h-20 "></div>
-    <nav class="fixed z-10 top-4 left-4 right-4 lg:top-6 lg:right-32 lg:left-32 xl:left-64 xl:right-64">
-
-        
-        <div class="flex items-center justify-between ">
-
-    <div class="flex justify-between gap-10 items-center w-full lg:w-auto">
-            <a href="/index.html"><div class="flex items-end gap-1"><img class="w-10" src="assets/icon.png" alt="logo"> <div class="font-semibold text-xl dark:text-white">CMIEA  </div></div> </a>
-            <div id="burger" class="w-8 lg:hidden "> <img src="assets/burger-alb.svg" class="hidden dark:block" alt="burger"> <img src="assets/burger-negru.svg" class="dark:hidden" alt="burger"></div>
-         <ul class="hidden lg:flex flex gap-10 text-sur dark:text-white/50">
-             <li><a href="/despre.html">Despre noi</a></li>
-             <li><a href="/cursuri.html">Cursuri</a></li>
-             <li><a href="/contact.html">Contacte</a></li>
-             <li><a href="/evenimente.html">Evenimente</a></li>
-                    <li><a href="/cluburi.html">Cluburi</a></li>
-         </ul>
+  <body class="home">
+    <a class="skip-link" href="#main">Sari la conținut</a>
+    <div class="announcement">
+      Un nou început nu are vârstă.
+      <a href="#cursuri"
+        >Descoperă cursurile gratuite <span aria-hidden="true">↗</span></a
+      >
     </div>
-
-         </ul>
-<div class="font-medium gap-6 hidden lg:flex items-center">
-    <div id="auth-buttons" class="flex items-center gap-4">
-        <a href="/login.html">
-            <button class="px-4 py-2 text-sur hover:text-black dark:hover:text-white">Login</button>
-        </a>
-        <a href="/register.html">
-            <button class="p-2 text-main dark:text-white border border-main dark:border-white rounded-xl dark:hover:bg-gray-100/10 hover:bg-black/10">Sign up</button>
-        </a>
-    </div>
-    <div id="user-menu" class="hidden relative">
-        <button id="user-menu-button" class="flex items-center gap-2 px-4 py-2 text-sur hover:text-black dark:hover:text-white">
-            <span id="user-email-display">User</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <header class="site-header wrap">
+      <a class="brand" href="index.html"
+        ><img src="assets/icon.png" alt="" /><span
+          >CMIEA<small>Învățăm. Creștem. Împreună.</small></span
+        ></a
+      >
+      <nav class="desktop-nav" aria-label="Navigare principală">
+        <a href="despre.html">Despre noi</a><a href="cursuri.html">Cursuri</a
+        ><a href="evenimente.html">Evenimente</a
+        ><a href="cluburi.html">Cluburi</a><a href="contact.html">Contacte</a>
+      </nav>
+      <div class="header-actions">
+        <div id="auth-buttons">
+          <a class="login-link" href="login.html">Autentificare</a
+          ><a class="button small" href="register.html"
+            >Înscrie-te <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <div id="user-menu" class="hidden relative">
+          <button id="user-menu-button">
+            <span id="user-email-display">Contul meu</span> ⌄
+          </button>
+          <div id="dropdown-menu" class="hidden absolute right-0">
+            <a href="dashboard.html">Contul meu</a
+            ><button id="logout-btn">Deconectare</button>
+          </div>
+        </div>
+        <button id="home-theme" class="icon-button" aria-label="Schimbă tema">
+          ◐</button
+        ><button
+          id="mobile-toggle"
+          class="icon-button"
+          aria-controls="phone-nav"
+          aria-expanded="false"
+          aria-label="Deschide meniul"
+        >
+          ☰
         </button>
-        <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-xl bg-white dark:bg-dark2 shadow-xl border border-gray-200 dark:border-dark2 ">
-            <div class="py-1">
-                <a href="/dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-sur dark:hover:bg-dark3">Dashboard</a>
-                <button id="logout-btn" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-sur dark:hover:bg-dark3">Logout</button>
-            </div>
-        </div>
-    </div>
-    <button id="theme-toggle" type="button" class="ml-4 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5">
-        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-    </button>
-</div>
-        </div>
+      </div>
+    </header>
+    <nav id="phone-nav" class="hidden mobile-nav" aria-label="Navigare mobilă">
+      <div class="h-full">
+        <a href="despre.html">Despre noi</a><a href="cursuri.html">Cursuri</a
+        ><a href="evenimente.html">Evenimente</a
+        ><a href="cluburi.html">Cluburi</a><a href="contact.html">Contacte</a
+        ><a href="login.html">Autentificare</a
+        ><a href="register.html">Înscrie-te gratuit</a>
+      </div>
     </nav>
-
-    <nav id="phone-nav" class="phone-nav hidden fixed z-1000 bg-sur h-screen w-screen lg:hidden">
-        <div id="close" class="text-main dark:text-white absolute right-6 top-6 text-3xl font-thin"><i class="ph ph-x text-5xl"></i></div>
-        <div class="h-full w-full text-black bg-white/90 font-thin dark:text-white dark:bg-[#1c1c1c] flex flex-col items-end p-4 justify-center text-4xl gap-5">
-            <a href="/despre.html">Despre noi</a>
-            <a href="/cursuri.html">Cursuri</a>
-            <a href="/contact.html">Contacte</a>
-            <a href="/evenimente.html">Evenimente</a>
-            <a href="/cluburi.html">Cluburi</a>
-            <hr class="border-black my-6 w-3/4 ml-auto dark:border-white">
-            <div class="flex gap-1 text-end flex-col text-2xl w-3/4">
-                <a href="login.html" class="w-full text-right">
-                    <button class="px-4 py-2 text-sur hover:text-black dark:hover:text-white text-end" >Login</button>
-                </a>
-                <a href="register.html" class="w-full text-right">
-                    <button class="p-2 text-main dark:text-white border border-main dark:border-white rounded-xl dark:hover:bg-gray-100/10 hover:bg-black/10">Sign up</button>
-                </a>
+    <main id="main">
+      <section class="hero wrap">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="status-dot"></span> EDUCAȚIE GRATUITĂ PENTRU ADULȚI
+          </p>
+          <h1>Nu e niciodată<br />târziu să <em>începi.</em></h1>
+          <p class="intro">
+            O abilitate nouă. Mai multă încredere. Un alt drum.<br />Descoperă
+            ce poți deveni, alături de CMIEA.
+          </p>
+          <div class="search-area">
+            <label class="sr-only" for="searchInput">Caută un curs</label>
+            <div class="search-box">
+              <i class="ph ph-magnifying-glass" aria-hidden="true"></i
+              ><input
+                id="searchInput"
+                type="search"
+                autocomplete="off"
+                placeholder="Ce ai vrea să înveți?"
+              /><a
+                href="#cursuri"
+                class="button"
+                aria-label="Explorează cursurile"
+                >Explorează <span aria-hidden="true">↗</span></a
+              >
             </div>
-            <button id="theme-toggle2" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5">
-                <svg id="theme-toggle-dark-icon2" class="hidden w-10 h-10" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                <svg id="theme-toggle-light-icon2" class="hidden w-10 h-10" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-            </button>
+            <div id="searchDropdown" class="hidden" aria-live="polite"></div>
+          </div>
+          <div class="popular">
+            <span>Încearcă:</span><button data-search="Engleză">Engleză</button
+            ><button data-search="Excel">Excel</button
+            ><button data-search="Antreprenoriat">Antreprenoriat</button>
+          </div>
+          <div class="hero-note">
+            <span class="note-icon" aria-hidden="true">✳</span>
+            <p>
+              Curiozitatea e tot ce îți trebuie.<br /><strong
+                >De restul, ne ocupăm împreună.</strong
+              >
+            </p>
+          </div>
         </div>
-    </nav>
-<div class="overflow-x-hidden opacity-70 dark:opacity-20">
-<div class="main absolute -z-1 top-0 left-0 hidden md:block">
-    <img src="assets/circle.png" class="w-auto circle circle-1 -z-1 absolute" alt="logo">
-    <img src="assets/circle2.png" class="w-auto circle circle-2 -z-1 absolute" alt="logo">
-</div>
-<div class="main2 absolute -z-1 top-0 left-0 hidden md:block">
-    <img src="assets/circle3.png" class="w-auto circle2 circle2-1 -z-1 absolute" alt="logo">
-    <img src="assets/circle5.png" class="w-auto circle2 circle2-2 -z-1 absolute" alt="logo">
-</div>
-<div class="main3 absolute -z-1 top-0 left-0 hidden 3xl:block">
-    <img src="assets/circle.png" class="w-auto circle3 circle3-1 -z-1 absolute" alt="logo">
-    <img src="assets/circle2.png" class="w-auto circle3 circle3-2 -z-1 absolute" alt="logo">
-</div>
-</div>
-
-<!-- Updated Hero Section to match evenimente.html style -->
-<section class="px-4 lg:px-32 xl:px-64 mt-12 dark:text-white mt-24">
-    <div class="bg-white dark:bg-dark2 rounded-2xl shadow-2xl  relative">
-        <div class="flex flex-col lg:flex-row">
-            <!-- Content Section -->
-            <div class="flex-1 p-8 lg:p-12 flex flex-col">
-                <div class="flex items-center gap-3 mb-6 flex-wrap">
-                    <div class="h-fit w-fit rounded-full border border-main dark:bg-dark px-2 md:px-3 py-1 text-main text-xs md:text-sm mb-2">
-                        Cursuri Gratuite Pentru Adulți
-                    </div>
-                </div>
-                
-                <div class="flex flex-col justify-between flex-grow">
-                    <div class="mb-8">
-                        <h1 class="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
-                            Educație pentru<span class="dark:text-maindark text-main"> fiecare</span>
-                        </h1>
-                        <p class="text-lg lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                            Descoperă cursuri care ți se potrivesc
-                        </p>
-                    </div>
-                    
-                    <div class="mt-4 w-full md:max-w-[450px] relative"> 
-                        <div class="mb-2 max-w-[450px] border border-gray-400 dark:border-sur text-xs p-3 lg:p-3 rounded-xl flex justify-between w-full bg-white dark:bg-dark3 mt-4 shadow-lg"> 
-                            <input type="text" id="searchInput" class="text-base w-full max-w-[300px] dark:text-white bg-transparent outline-none" placeholder="Caută cursuri.."> 
-                            <i class="ph ph-magnifying-glass text-2xl dark:text-sur text-black/30"></i>
-                        </div>
-                        <div id="searchDropdown" class="absolute w-full mt-6 bg-white dark:bg-dark2 border border-black/30 dark:border-sur rounded-xl shadow-lg max-h-[300px] overflow-y-auto top-12 right-0 left-0 hidden"> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Visual Section -->
-            <div class="lg:w-1/2 relative">
-                <div class="h-64 lg:h-full bg-gradient-to-br from-main/20 via-maindark/10 to-purple-300/20 dark:from-maindark/30 dark:via-main/20 dark:to-purple-600/30 flex items-center justify-center relative overflow-hidden">
-                    <!-- Desktop Image -->
-                    <img src="assets/home-pc.png" alt="homeimg2" class="w-full h-full object-cover hidden md:block">
-                    
-                    <!-- Mobile Image -->
-                    <img src="assets/home-phone.png" class="md:hidden w-full h-full object-cover" alt="homeimg">
-                </div>
-            </div>
+        <div class="hero-visual">
+          <img
+            class="hero-photo"
+            src="assets/home-pc.png"
+            alt="Adulți participând la un atelier de învățare la CMIEA"
+            fetchpriority="high"
+          />
+          <div class="photo-label">
+            <span class="status-dot"></span> O comunitate care învață împreună
+          </div>
+          <div class="free-stamp">
+            <span>DESCHIS PENTRU TINE</span><strong>100%</strong
+            ><span>CURSURI GRATUITE</span>
+          </div>
+          <div class="photo-caption">
+            <span
+              >Mai mult decât un curs.<br /><strong
+                >Un pas înainte.</strong
+              ></span
+            ><a href="despre.html" aria-label="Descoperă comunitatea CMIEA"
+              >↗</a
+            >
+          </div>
         </div>
-    </div>
-</section>
-
-<section class="p-4 lg:px-32 xl:px-64  mb-4 flex flex-col items-center justify-center text-center font-medium ">
-        <div class="w-full flex flex-col justify-center items-center py-2 rounded-2xl shadow-lg bg-white dark:bg-dark2  overflow-x-hidden">
-            
-            <div class="logos flex gap-32 py-2">
-                <div class="logo_items text-xl text-semibold text-sur  dark:text-gray-400">
-                <h1 class="">PROGRAMARE</h1>
-                <h1 class="">UNELTE GOOGLE</h1>
-                <h1 class="">LEADERSHIP</h1>
-                <h1 class="">LIMBA ENGLEZA</h1>
-                <h1 class="">VORBIT IN PUBLIC</h1>
-                <h1 class="">PARENTING</h1>
-                <h1 class="">EXCEL</h1>
-                <h1 class="">CONTABILITATE</h1>
-                <h1 class="">SECRETARIAT</h1>
-                <h1 class="">SMM</h1>
-                <h1 class="">ANTREPRENORIAT</h1>
-                <h1 class="">PROGRAMARE</h1>
-                <h1 class="">UNELTE GOOGLE</h1>
-                <h1 class="">LEADERSHIP</h1>
-                <h1 class="">LIMBA ENGLEZA</h1>
-                <h1 class="">VORBIT IN PUBLIC</h1>
-                <h1 class="">PARENTING</h1>
-                <h1 class="">EXCEL</h1>
-                <h1 class="">CONTABILITATE</h1>
-                <h1 class="">SECRETARIAT</h1>
-                <h1 class="">SMM</h1>
-                <h1 class="">PROGRAMARE</h1>
-                </div>
-            </div>
-
+      </section>
+      <div class="values-strip wrap">
+        <p>
+          <i class="ph ph-graduation-cap" aria-hidden="true"></i> Înveți fără
+          taxe
+        </p>
+        <p>
+          <i class="ph ph-users-three" aria-hidden="true"></i> Formatori care te
+          susțin
+        </p>
+        <p>
+          <i class="ph ph-sparkle" aria-hidden="true"></i> Abilități pentru
+          viața reală
+        </p>
+        <p>
+          <i class="ph ph-map-pin" aria-hidden="true"></i> Aici, în Chișinău
+        </p>
+      </div>
+      <section id="cursuri" class="courses-section wrap">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">UN PAS MIC. NOI POSIBILITĂȚI.</p>
+            <h2>Cu ce vrei să începi?</h2>
+          </div>
+          <a class="text-link" href="cursuri.html"
+            >Toate cursurile <span aria-hidden="true">↗</span></a
+          >
         </div>
-    </section>
-
-    
-    
-    
-
-<div class="px-4 lg:px-32 xl:px-64 flex flex-col gap-4 md:items-start items-center mt-16 dark:text-white"> 
-    <div>
-        <p class="text-3xl lg:text-5xl font-semibold"><span class="text-main dark:text-maindark">Cursurile</span> noastre</p>
-    </div>
-    <div class="mb-5 md:mb-3 p-4 shadow-lg bg-white dark:bg-dark2 dark:border-white/50 rounded-2xl w-full">
-        <div class="flex flex-col md:flex-row gap-4 justify-between">
-            <div class="flex items-center gap-2 justify-between">
-                <label class="text-sur">Categorie:</label>
-                <select id="categoryFilter" class="px-3 py-2 rounded-lg dark:bg-dark2 dark:text-white">
-                    <option value="">Toate categoriile</option>
-                    <option value="Începător">Începător</option>
-                    <option value="Intermediar">Intermediar</option>
-                    <option value="Avansat">Avansat</option>
-                </select>
-            </div>
-            
-            <div class="flex items-center gap-2 justify-between">
-                <label class="text-sur">Durată</label>
-                <select id="durationFilter" class="px-3 py-2 rounded-lg dark:bg-dark2 dark:text-white">
-                    <option value="">Toate duratele</option>
-                    <option value="3 Luni">3 Luni</option>
-                    <option value="2 Luni">2 Luni</option>
-                    <option value="1 Lună">1 Lună</option>`
-                </select>
-            </div>
-            
-            <div class="flex items-center gap-2 justify-between">
-                <label class="text-sur">Limbă</label>
-                <select id="languageFilter" class="px-3 py-2 rounded-lg dark:bg-dark2 dark:text-white">
-                    <option value="">Toate limbile</option>
-                    <option value="Română">Română</option>
-                    <option value="Engleză">Engleză</option>
-                    <option value="Rusă">Rusă</option>
-                </select>
-            </div>
+        <div class="filters">
+          <span class="filter-heading"
+            ><i class="ph ph-sliders-horizontal" aria-hidden="true"></i> Găsește
+            cursul potrivit</span
+          >
+          <div>
+            <label for="categoryFilter">Nivel</label
+            ><select id="categoryFilter">
+              <option value="">Toate nivelurile</option>
+              <option>Începător</option>
+              <option>Intermediar</option>
+              <option>Avansat</option>
+            </select>
+          </div>
+          <div>
+            <label for="durationFilter">Durată</label
+            ><select id="durationFilter">
+              <option value="">Orice durată</option>
+              <option>3 Luni</option>
+              <option>2 Luni</option>
+              <option>1 Lună</option>
+            </select>
+          </div>
+          <div>
+            <label for="languageFilter">Limbă</label
+            ><select id="languageFilter">
+              <option value="">Toate limbile</option>
+              <option>Română</option>
+              <option>Engleză</option>
+              <option>Rusă</option>
+            </select>
+          </div>
         </div>
-    </div>
-</div>
-    <section id="courses-container" class=" px-4 lg:px-32 xl:px-64 grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-3 dark:text-white ">
-        
-
-          
-    </section>
-    <div class="pagination-container mb-32 dark:text-white" id="pagination-container">   
-    </div>
-
-    
-
-    <section class="p-4 lg:px-32 xl:px-64 mt-12 dark:text-white ">
-        <div class="bg-white dark:bg-dark2 p-10 rounded-2xl">
-            <div class="text-center flex flex-col gap-4 items-center lg:hidden">
-        <p class="font-medium text-xl ">Un pas către <span class="text-main dark:text-maindark ">viitorul</span> tău începe aici</p>
-        <img src="assets/image-more.png" class="rounded-xl " alt="">
-        <p class="text-sur text-sm">Un pas mai aproape de viitorul tău.
-            Educația corectă, oportunitățile potrivite.</p>
-        <a href="/despre.html"><button class="bg-main dark:bg-maindark text-white px-5 py-2 rounded-xl w-[200px]">Află mai multe</button></a>
+        <div
+          id="courses-container"
+          class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          aria-live="polite"
+        >
+          <p class="col-span-full course-status">Se încarcă cursurile…</p>
         </div>
-
-        <div class="hidden lg:flex text-center gap-4 items-center justify-between items-start">
-            <div class="flex flex-col justify-between text-start h-full max-w-[450px] gap-4">
-                <p class="font-semibold text-5xl">Un pas către <span class="text-main">viitorul</span> tău începe aici</p>
-                <p class="text-sur text-xl">Un pas mai aproape de viitorul tău.
-                    Educația corectă, oportunitățile potrivite.</p>
-               <a href="/despre.html"> <button class="bg-main dark:bg-maindark text-lg text-white px-5 py-2 rounded-xl w-[200px] mt-6">Află mai multe</button></a>
-                </div>
-                <img src="assets/image-more.png" class="rounded-xl w-[400px] " alt="imagine-principala">
-            </div>
-        
-        
-
-            </div>
-        
-        
-    </section>
-    <section class="p-4  lg:px-32 xl:px-64 flex flex-col items-center justify-center text-center font-medium ">
-        <p class="text-black dark:text-white text-xl font-semibold"><span class="text-main dark:text-maindark"></p>
-        <div class="w-full flex flex-col justify-center items-center  rounded-3xl bg-white dark:bg-dark2 overflow-x-hidden">
-            <div class="logos flex gap-32 py-2 bg-white dark:bg-dark2">
-                <div class="logo_items">
-                <img class="w-30" src="assets/carusel1.png">
-                <img class="w-30" src="assets/carusel2.png">
-                <img class="w-30 h-22" src="assets/dvv.png">
-                <img class="w-30" src="assets/carusel1.png">
-                <img class="w-30" src="assets/carusel2.png">
-                <img class="w-30 h-22" src="assets/dvv.png">
-                <img class="w-30" src="assets/carusel1.png">
-                <img class="w-30" src="assets/carusel2.png">
-                <img class="w-30 h-22" src="assets/dvv.png">
-                <img class="w-30" src="assets/carusel1.png">
-                <img class="w-30" src="assets/carusel2.png">
-                <img class="w-30 h-22" src="assets/dvv.png">
-                <img class="w-30" src="assets/carusel1.png">
-                <img class="w-30" src="assets/carusel2.png">
-                <img class="w-30 h-22" src="assets/dvv.png">
-                <img class="w-30" src="assets/carusel1.png">
-                <img class="w-30 h-22" src="assets/carusel2.png">
-                <img class="w-30 h-22" src="assets/dvv.png">
-                <img class="w-30" src="assets/carusel1.png">
-                <img class="w-30" src="assets/carusel2.png">
-                <img class="w-30 h-22" src="assets/dvv.png">
-                
-                
-
-                
-                </div>
-                </div>
-
+        <div id="pagination-container"></div>
+      </section>
+      <section class="community wrap">
+        <div class="community-photo">
+          <img
+            src="assets/image-more.png"
+            alt="O sesiune de dialog și învățare la centrul CMIEA"
+            loading="lazy"
+          />
         </div>
-    </section>
-    
-    <section class="m-4 lg:mx-32 xl:mx-64 flex flex-col  lg:flex-row items-center gap-10 overflow-x-hidden mt-24" >
-    
-
-
-        <div class="">
-            <div class="flex flex-col md:self-start lg:items-start lg:pr-12 gap-4">
-            <p class="text-4xl lg:text-6xl font-medium py-3 dark:text-white">Ce spun formabilii noștrii</p>
-            <div class="flex justify-center items-center gap-4">
-                <button id="slider-button-left" class="swiper-button-p group !p-2 flex justify-center items-center border border-solid border-sur !w-12 !h-12 dark:bg-dark2 transition-all duration-500 rounded-full hover:bg-black/10 dark:hover:bg-white/10" data-carousel-prev><img src="assets/caret-left.svg" class="dark:hidden"><img src="assets/caret-left (1).svg" class="hidden dark:block"></button>
-                <button id="slider-button-right" class="swiper-button-n group !p-2 flex justify-center items-center border border-solid border-sur !w-12 !h-12 dark:bg-dark2 transition-all duration-500 rounded-full hover:bg-black/10 dark:hover:bg-white/10" data-carousel-next><img src="assets/caret-right.svg" class="dark:hidden"><img src="assets/caret-right (1).svg" class="hidden dark:block"></button>
-            </div>
+        <div class="community-copy">
+          <p class="eyebrow">LOCUL TĂU PENTRU UN NOU ÎNCEPUT</p>
+          <h2>Învățarea ne<br />aduce <em>împreună.</em></h2>
+          <p>
+            Suntem Centrul Municipal de Învățare și Educație a Adulților. Credem
+            că fiecare om merită șansa de a descoperi, de a se dezvolta și de a
+            merge mai departe.
+          </p>
+          <a class="button" href="despre.html"
+            >Cunoaște CMIEA <span aria-hidden="true">↗</span></a
+          >
         </div>
-            </div>
-        
-        <div class="w-full relative">
-            <div class="swiper multiple-slide-carousel swiper-container shadow-lg relative rounded-4xl">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide h-[60vh]">
-                        <div class="h-[60vh] flex flex-col items-start justify-between rounded-4xl p-10 bg-white dark:bg-dark2  shadow-lg dark:text-white">
-                            <div class="flex justify-between w-full">
-                                <img src="assets/recenzie1.jpg" alt="uk" class="h-30 w-30 rounded-full">
-                                <i class="ph-fill text-gray-200 ph-quotes dark:text-dark3 text-[10rem]"></i>
-                            </div>
-                            
-                            <div class="flex flex-col gap-2">
-                                <p class="text-2xl md:text-4xl text-semibold">„Mulțumesc echipei CMIEA și GIZ pentru susținere și ocazia specială..." </p>
-                                <p class="text-sur mt-6">Olga Jumbei • 45 Ani</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide h-[60vh]">
-                        <div class="h-[60vh] flex flex-col items-start justify-between rounded-4xl p-10 bg-white dark:bg-dark2  shadow-lg  dark:text-white">
-                            <div class="flex justify-between w-full">
-                                <img src="assets/recenzie2.jpg" alt="uk" class="h-30 w-30 rounded-full">
-                                <i class="ph-fill text-gray-200 ph-quotes dark:text-dark3 text-[10rem]"></i>
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <p class="text-2xl md:text-4xl text-semibold">„CMIEA este locul unde poţi să-ţi alimentezi vocaţia."
-                                </p>
-                                <p class="text-sur mt-6">Valentina Alexa • 42 Ani</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide h-[60vh]">
-                        <div class="h-[60vh] flex flex-col items-start justify-between rounded-4xl p-10 bg-white dark:bg-dark2 shadow-lg  dark:text-white">
-                            <div class="flex justify-between w-full ">
-                                <img src="assets/victor.jpeg" alt="uk" class="h-30 w-30 rounded-full ">
-                                <i class="ph-fill text-gray-200 ph-quotes dark:text-dark3 text-[10rem]"></i>
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <p class="text-2xl md:text-4xl text-semibold">„CMIEA oferă instruire de calitate! Atmosferă plăcută și suport continuu."</p>
-                                <p class="text-sur mt-6">Victor S. • 34 Ani</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="swiper-slide h-[60vh]">
-                        <div class="h-[60vh] flex flex-col items-start justify-between rounded-4xl p-10 bg-white dark:bg-dark2 shadow-lg dark:text-white">
-                            <div class="flex justify-between w-full">
-                                <img src="assets/ioana.jpeg" alt="uk" class="h-30 w-30 rounded-full">
-                                <i class="ph-fill text-gray-200 ph-quotes dark:text-dark3 text-[10rem]"></i>
-                            </div>
-                            
-                            <div class="flex flex-col gap-2">
-                                <p class="text-2xl md:text-4xl text-semibold">„Profesioniști adevărați! Am dobândit cunoștințe valoroase."
-                                </p>
-                                <p class="text-sur mt-6">Ioana D. • 27 Ani</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="hidden md:block absolute right-0 top-0 h-full w-[50%] pointer-events-none z-5
-            bg-gradient-to-l from-white via-white/90 via-white/80 via-white/70 via-white/60
-            via-white/50 via-white/40 via-white/30 via-white/20 to-transparent
-            dark:from-neutral-900 dark:via-neutral-900/90 dark:via-neutral-900/80 dark:via-neutral-900/70 
-            dark:via-neutral-900/60 dark:via-neutral-900/50 dark:via-neutral-900/40 
-            dark:via-neutral-900/30 dark:via-neutral-900/20 dark:to-transparent">
-            </div>        
-    </section>
-    
-
-    <footer class="p-4 lg:px-32 xl:px-64 mt-24 dark:text-white bg-main dark:bg-maindark rounded-t-4xl text-white">
-        <div class="flex flex-col justify-between gap-10 items-start lg:flex-row py-10">
-            <div class="flex flex-col gap-2 max-w-[350px]">
-                <a href="index.html"><p class="text-5xl font-bold">CMIEA</p></a>
-                <p>„Sprijinim educația și dezvoltarea adulților prin cursuri gratuite și programe dedicate."</p>
-                <div class="flex gap-5 mt-2">
-                    <a href="https://www.facebook.com/profile.php?id=100091913902284"><img class="w-7" src="assets/instagram.png" alt="ig"></a>
-                    <a href="https://www.facebook.com/profile.php?id=100091913902284"><img class="w-7" src="assets/facebook.png" alt="fb"></a>
-                    <a href="https://t.me/+03ceuSlIN25mMTky" class="text-white hover:text-gray-300 flex items-center justify-center w-7 h-7 rounded-full bg-white/20"><i class="ph ph-telegram-logo text-lg"></i></a>
-                </div>
-            </div>
-
-            <div class="flex gap-10 flex-col lg:flex-row">
-                <ul class="flex flex-col gap-2">
-                    <li><p class="font-bold">Platforma</p></li>
-                    <li><a href="/cursuri.html">Cursuri oferite</a></li>
-                    <li><a href="">Înscriere la cursuri</a></li>
-                    <li><a href="/evenimente.html">Evenimente</a></li>
-                    <li><a href="/cluburi.html">Cluburi</a></li>
-                    <li><a href="#reviews">Evaluare și feedback</a></li>
-                </ul>
-                <ul class="flex flex-col gap-2">
-                    <li><p class="font-bold" >Despre noi</p></li>
-                    <li><a href="/despre.html">Misiunea noastra</a></li>
-                    <li><a href="/contact.html">Contact</a></li>
-                </ul>
-            </div>
+      </section>
+      <section id="reviews" class="reviews wrap">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">OAMENI REALI. NOI ÎNCEPUTURI.</p>
+            <h2>Împreună, prindem curaj.</h2>
+          </div>
+          <span class="review-flower" aria-hidden="true">✳</span>
         </div>
-
-    <hr>
-
-    <div class="flex flex-col lg:flex-row gap-10 justify-between py-5">
-        <p>&copy; 2025 CMIEA</p>
-        <div class="flex flex-col lg:flex-row text-sm gap-2 lg:gap-8">
-            <a href="/termeni.html">Termeni și Condiții</a>
-            <a href="/confidentialitate.html">Politica de Confidențialitate</a>
-            <a href="/cookies.html">Politica privind Cookies</a>
+        <div class="review-grid">
+          <figure>
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <blockquote>
+              CMIEA este locul unde poți să-ți alimentezi vocația.
+            </blockquote>
+            <figcaption>
+              <img src="assets/recenzie2.jpg" alt="" loading="lazy" /><span
+                >Valentina Alexa<small>Participantă la cursuri</small></span
+              >
+            </figcaption>
+          </figure>
+          <figure>
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <blockquote>
+              CMIEA oferă instruire de calitate! Atmosferă plăcută și suport
+              continuu.
+            </blockquote>
+            <figcaption>
+              <img src="assets/victor.jpeg" alt="" loading="lazy" /><span
+                >Victor S.<small>Participant la cursuri</small></span
+              >
+            </figcaption>
+          </figure>
+          <figure>
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <blockquote>
+              Profesioniști adevărați! Am dobândit cunoștințe valoroase.
+            </blockquote>
+            <figcaption>
+              <img src="assets/ioana.jpeg" alt="" loading="lazy" /><span
+                >Ioana D.<small>Participantă la cursuri</small></span
+              >
+            </figcaption>
+          </figure>
         </div>
-    </div>
+      </section>
+      <section class="closing wrap">
+        <div>
+          <p class="eyebrow">VIITORUL ÎNCEPE CU TINE</p>
+          <h2>Fă loc pentru ceva nou.</h2>
+          <p>Primul pas e simplu. Alege ce vrei să înveți.</p>
+        </div>
+        <a class="button light" href="register.html"
+          >Înscrie-te gratuit <span aria-hidden="true">↗</span></a
+        >
+      </section>
+    </main>
+    <footer class="site-footer wrap">
+      <div class="footer-top">
+        <a class="brand" href="index.html"
+          ><img src="assets/icon.png" alt="" /><span
+            >CMIEA<small>Educație pentru fiecare.</small></span
+          ></a
+        >
+        <nav aria-label="Legături utile">
+          <a href="despre.html">Despre noi</a><a href="cursuri.html">Cursuri</a
+          ><a href="contact.html">Contacte</a
+          ><a href="https://www.facebook.com/profile.php?id=100091913902284"
+            >Facebook ↗</a
+          ><a href="https://t.me/+03ceuSlIN25mMTky">Telegram ↗</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 CMIEA · Chișinău, Moldova</p>
+        <div>
+          <a href="termeni.html">Termeni și condiții</a
+          ><a href="confidentialitate.html">Confidențialitate</a
+          ><a href="cookies.html">Cookies</a
+          ><a href="https://landings.md/">Creat de Landings.md ↗</a>
+        </div>
+      </div>
     </footer>
-     <div class="bg-gradient-to-r from-purple-600 to-blue-600 py-2">
-        <div class="container mx-auto px-6 text-center">
-            <a href="https://landings.md/" target="_blank" class="text-white text-sm hover:text-yellow-300 transition-colors font-medium">
-                Creare website - Landings.md
-            </a>
-        </div>
-    </div>
-    
-    <!-- Floating Telegram Bubble -->
-    <a href="https://t.me/+03ceuSlIN25mMTky" target="_blank" class="telegram-float" title="Contactează-ne pe Telegram">
-        <i class="ph ph-telegram-logo"></i>
-    </a>
-    
-    <script type="module" src="/js/main.js"></script>
+    <script src="js/home-ui.js"></script>
+    <script type="module" src="js/main.js"></script>
     <script type="module" src="js/auth-state.js"></script>
-    
   </body>
 </html>

@@ -9,9 +9,6 @@ import {
     doc,
     getDoc,
     getCountFromServer,
-    limit,
-    startAfter,
-    orderBy,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
@@ -34,7 +31,6 @@ const db = getFirestore(app);
 let currentPage = 1;
 const itemsPerPage = 6;
 let allCourses = []; // This will store all courses for search functionality
-let lastDocumentSnapshot = null; // For pagination
 let courseCache = {
     data: null,
     timestamp: null,
@@ -231,7 +227,7 @@ async function loadAllCourses() {
                 id: doc.id,
                 name: courseData.name || '',
                 description: courseData.description || '',
-                image: courseData.image || '/assets/default-course.png',
+                image: courseData.image || '/assets/course-img.png',
                 categorie: courseData.categorie || 'Începător',
                 durata: courseData.durata || '',
                 limba: courseData.limba || '',
@@ -303,9 +299,12 @@ async function loadSingleCourse(courseId) {
 /**
  * Render all courses in the courses container with pagination
  */
+let courseRenderRequest = 0;
+
 async function renderCourses() {
+    const requestId = ++courseRenderRequest;
+    const container = document.getElementById('courses-container');
     try {
-        const container = document.getElementById('courses-container');
         
         if (!container) {
             console.error("Courses container not found");
@@ -325,75 +324,29 @@ async function renderCourses() {
         const durationFilter = document.getElementById('durationFilter')?.value || '';
         const languageFilter = document.getElementById('languageFilter')?.value || '';
         
-        // Build query with server-side filtering
-        let coursesRef = collection(db, 'courses');
-        let queryConstraints = [];
-        
-        if (categoryFilter) {
-            queryConstraints.push(where("categorie", "==", categoryFilter));
-        }
-        if (durationFilter) {
-            queryConstraints.push(where("durata", "==", durationFilter));
-        }
-        if (languageFilter) {
-            queryConstraints.push(where("limba", "==", languageFilter));
-        }
-        
-        // We need to include an orderBy for pagination
-        queryConstraints.push(orderBy("name", "asc"));
-        
-        // Apply filters to query if any exist
-        let coursesQuery = query(coursesRef, ...queryConstraints);
-        
-        // Apply pagination
-        if (currentPage > 1 && lastDocumentSnapshot) {
-            coursesQuery = query(coursesQuery, startAfter(lastDocumentSnapshot), limit(itemsPerPage));
-        } else {
-            // First page
-            coursesQuery = query(coursesQuery, limit(itemsPerPage));
-            // Reset the last document
-            lastDocumentSnapshot = null;
-        }
-        
-        // Execute query
-        const querySnapshot = await getDocs(coursesQuery);
-        
-        if (querySnapshot.empty && currentPage === 1) {
-            container.innerHTML = `
-                <div class="col-span-full text-center py-8">
-                    Nu există cursuri disponibile
-                </div>
-            `;
-            return;
-        } else if (querySnapshot.empty && currentPage > 1) {
-            // If we're on a page beyond available data, go back to page 1
-            currentPage = 1;
-            renderCourses();
-            return;
-        }
+        // Search already loads this small catalogue. Reuse it so combined filters
+        // do not require Firestore composite indexes and numbered pages are stable.
+        const catalogue = await loadAllCourses();
+        if (requestId !== courseRenderRequest) return;
+        if (!courseCache.data) throw new Error('Course catalogue unavailable');
+        const matchingCourses = catalogue.filter(course =>
+            (!categoryFilter || course.categorie === categoryFilter) &&
+            (!durationFilter || course.durata === durationFilter) &&
+            (!languageFilter || course.limba === languageFilter)
+        ).sort((a, b) => a.name.localeCompare(b.name, 'ro'));
+        const totalCount = matchingCourses.length;
+        const totalPages = Math.ceil(totalCount / itemsPerPage);
+        currentPage = Math.min(currentPage, Math.max(1, totalPages));
+        const pageCourses = matchingCourses.slice(
+            (currentPage - 1) * itemsPerPage, currentPage * itemsPerPage
+        );
+        const enrollmentCounts = await getEnrollmentCountsForCourses(pageCourses.map(course => course.id));
+        if (requestId !== courseRenderRequest) return;
+        const courses = pageCourses.map(course => ({
+            ...course,
+            remainingSpots: Math.max(0, (parseInt(course.locuri) || 0) - (enrollmentCounts[course.id] || 0))
+        }));
 
-        // Store the last document for pagination
-        lastDocumentSnapshot = querySnapshot.docs[querySnapshot.docs.length - 1];
-        
-        // Get all course IDs for batch enrollment query
-        const courseIds = querySnapshot.docs.map(doc => doc.id);
-        
-        // Get all enrollment counts in a single batch operation
-        const enrollmentCounts = await getEnrollmentCountsForCourses(courseIds);
-        
-        // Process all courses with enrollment counts
-        const courses = querySnapshot.docs.map(doc => {
-            const course = { id: doc.id, ...doc.data() };
-            const totalSpots = parseInt(course.locuri) || 0;
-            const approvedEnrollments = enrollmentCounts[course.id] || 0;
-            const remainingSpots = Math.max(0, totalSpots - approvedEnrollments);
-            
-            return {
-                ...course,
-                remainingSpots
-            };
-        });
-        
         // Clear container
         container.innerHTML = '';
         
@@ -415,7 +368,7 @@ async function renderCourses() {
                         <div class="grid grid-cols-1 gap-4 p-5 dark:bg-dark2 dark:border-white/50 rounded-2xl h-full z-10 hover:bg-black/10 dark:hover:bg-gray-100/10 bg-white duration-200 shadow-xl">
                             <div class="flex justify-start items-start gap-3 font-medium">
                                 <div class="w-12 h-12 flex-shrink-0 rounded-lg flex items-center justify-center overflow-hidden ">
-                                    <img src="${course.image || '/assets/default-course.png'}" class="w-full h-full object-cover" alt="Course">
+                                    <img src="${course.image || '/assets/course-img.png'}" class="w-full h-full object-cover" alt="Course">
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="lg:text-xl dark:text-white line-clamp-2 break-words">${course.name || 'Curs fără nume'}</p>
@@ -457,12 +410,6 @@ async function renderCourses() {
             container.innerHTML = coursesHTML;
         }
 
-        // Get total count for pagination
-        const countQuery = query(coursesRef, ...queryConstraints.filter(c => c.type !== 'limit' && c.type !== 'startAfter'));
-        const countSnapshot = await getCountFromServer(countQuery);
-        const totalCount = countSnapshot.data().count;
-        const totalPages = Math.ceil(totalCount / itemsPerPage);
-
         // Render pagination controls if there are multiple pages
         if (totalPages > 1) {
             renderPagination(totalPages, totalCount);
@@ -479,11 +426,13 @@ async function renderCourses() {
 
     } catch (error) {
         console.error('Error loading courses:', error);
+        if (requestId !== courseRenderRequest) return;
+        document.getElementById('pagination-container')?.replaceChildren();
         if (container) {
             container.innerHTML = `
                 <div class="col-span-full text-center py-8 text-red-500">
                     <p>Nu s-au putut încărca cursurile. Vă rugăm să încercați din nou mai târziu.</p>
-                    <p class="text-sm mt-2">Eroare: ${error.message}</p>
+                    <a href="/contact.html" class="text-sm mt-2 underline">Contactează-ne pentru ajutor</a>
                 </div>
             `;
         }
@@ -682,7 +631,7 @@ function performSearch(searchTerm) {
                 <a href="/curs.html?id=${course.id}" class="block">
                     <div class="p-4 hover:bg-black/10 dark:hover:bg-gray-100/10 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-b-0">
                         <div class="flex items-center gap-3">
-                            <img src="${course.image}" class="w-10 h-10 object-cover flex-shrink-0" alt="Course" onerror="this.src='/assets/default-course.png'">
+                            <img src="${course.image}" class="w-10 h-10 object-cover flex-shrink-0" alt="Course" onerror="this.src='/assets/course-img.png'">
                             <p class="text-sm font-medium dark:text-white text-gray-900 truncate">${course.name}</p>
                         </div>
                     </div>
@@ -710,7 +659,7 @@ function performSearch(searchTerm) {
  * Handle clicking outside the search dropdown to close it
  */
 function handleClickOutside(event) {
-    if (searchDropdown && !event.target.closest('.relative')) {
+    if (searchDropdown && !searchDropdown.parentElement.contains(event.target) && !event.target.closest('[data-search]')) {
         searchDropdown.classList.add('hidden');
     }
 }
@@ -968,7 +917,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (categoryFilter) {
                 categoryFilter.addEventListener('change', () => {
                     currentPage = 1;
-                    lastDocumentSnapshot = null; // Reset pagination when filter changes
                     renderCourses();
                 });
             }
@@ -976,7 +924,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (durationFilter) {
                 durationFilter.addEventListener('change', () => {
                     currentPage = 1;
-                    lastDocumentSnapshot = null; // Reset pagination when filter changes
                     renderCourses();
                 });
             }
@@ -984,7 +931,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (languageFilter) {
                 languageFilter.addEventListener('change', () => {
                     currentPage = 1;
-                    lastDocumentSnapshot = null; // Reset pagination when filter changes
                     renderCourses();
                 });
             }
