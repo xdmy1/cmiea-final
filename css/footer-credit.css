@@ -1,0 +1,28 @@
+.footer-credit {
+  margin: 0;
+  padding: 18px 20px;
+  text-align: center;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.footer-credit-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.footer-credit-link:hover {
+  text-decoration-thickness: 2px;
+}
+.footer-credit-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+.footer-credit-standalone {
+  width: 100%;
+  background: #3542ff;
+  color: #fff;
+}
+.dark .footer-credit-standalone {
+  background: #4954eb;
+}
