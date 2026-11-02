@@ -20,7 +20,7 @@ body.home {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: Onest, Arial, sans-serif;
+  font-family: "Onest", sans-serif;
   font-size: 14px;
 }
 .home * {
@@ -180,10 +180,9 @@ body.home {
   letter-spacing: -3.3px;
   margin: 0 0 25px;
 }
-.hero em,
-.community em {
-  font-family: Georgia, serif;
-  font-weight: 400;
+.heading-accent {
+  font-family: inherit;
+  font-weight: inherit;
   color: var(--accent);
 }
 .intro {
@@ -547,7 +546,6 @@ h2 {
   background: var(--surface);
 }
 .quote-mark {
-  font-family: Georgia, serif;
   font-size: 48px;
   line-height: 1;
   color: #4954eb;
@@ -1004,5 +1002,334 @@ h2 {
   color: var(--accent);
 }
 @media (min-width: 851px) and (max-width: 1150px) {
-  .free-stamp { right: -8px; }
+  .free-stamp {
+    right: -8px;
+  }
+}
+
+/* Original Onest typography, with a clearer two-weight hierarchy. */
+.home {
+  font-optical-sizing: auto;
+}
+.hero h1 {
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+}
+.home h2 {
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+.heading-accent {
+  position: relative;
+  display: inline-block;
+}
+.heading-accent::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.06em;
+  height: 0.08em;
+  border-radius: 100%;
+  background: var(--accent);
+  opacity: 0.2;
+}
+.hero {
+  gap: 56px;
+  padding-block: 60px;
+}
+.hero-copy,
+.hero-visual {
+  min-width: 0;
+}
+.hero .eyebrow {
+  width: fit-content;
+  padding: 9px 12px;
+  border-radius: 24px;
+  background: var(--soft);
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+.hero-visual {
+  border-radius: 24px;
+}
+.hero-visual::before {
+  content: "";
+  position: absolute;
+  inset: 12px -12px -12px 12px;
+  background: var(--accent);
+  border-radius: 24px;
+  z-index: -1;
+  opacity: 0.12;
+}
+.hero-photo {
+  border-radius: 24px;
+}
+.hero-visual::after {
+  border-radius: 0 0 24px 24px;
+}
+.photo-label {
+  border-radius: 30px;
+}
+.free-stamp {
+  right: 18px;
+  top: 72px;
+  width: 112px;
+  height: 112px;
+  background: #3542ff;
+  color: #fff;
+  outline-color: #ffffff70;
+  transform: rotate(8deg);
+  box-shadow: 0 8px 24px #0002;
+}
+.photo-caption {
+  font-weight: 400;
+}
+.photo-caption strong {
+  font-weight: 600;
+}
+.search-box {
+  padding: 7px 7px 7px 18px;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px #00000005;
+}
+.search-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.button,
+.search-box .button {
+  border-radius: 11px;
+}
+.values-strip {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+.values-strip p + p {
+  border-left: 1px solid var(--line);
+}
+.filters {
+  border-radius: 16px;
+  padding: 18px 22px;
+}
+#courses-container > a > div {
+  border-radius: 18px;
+  padding: 25px;
+}
+#courses-container > a > div::after {
+  content: "Vezi cursul ↗";
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  padding-top: 4px;
+}
+#courses-container > a > div > div:first-child > div:first-child {
+  background: var(--soft);
+  border-radius: 12px;
+  padding: 8px;
+}
+.community {
+  border-radius: 24px;
+}
+.community-photo {
+  overflow: hidden;
+  border-radius: 16px;
+}
+.community-photo img {
+  border-radius: 16px;
+}
+.review-grid figure {
+  border-radius: 18px;
+  padding: 28px;
+}
+.quote-mark {
+  font-size: 32px;
+  margin-bottom: 14px;
+}
+.closing {
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.closing::after {
+  content: "";
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border: 1px solid #ffffff25;
+  border-radius: 50%;
+  right: -70px;
+  top: -130px;
+  box-shadow:
+    0 0 0 40px #ffffff08,
+    0 0 0 80px #ffffff06;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Interaction feedback: immediate press response and interruptible transitions. */
+.button,
+.popular button,
+.photo-caption a,
+.icon-button {
+  transition:
+    transform 180ms ease-out,
+    background-color 180ms ease-out,
+    box-shadow 180ms ease-out;
+}
+.button span,
+.text-link span {
+  display: inline-block;
+  transition: transform 200ms ease-out;
+}
+.button:active,
+.popular button:active,
+.icon-button:active {
+  transform: scale(0.96);
+}
+.desktop-nav a {
+  position: relative;
+}
+.desktop-nav a::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease-out;
+}
+.desktop-nav a:hover {
+  text-decoration: none;
+}
+.desktop-nav a:hover::after,
+.desktop-nav a:focus-visible::after {
+  transform: scaleX(1);
+}
+#courses-container > a > div {
+  transition:
+    transform 220ms ease-out,
+    border-color 220ms ease-out,
+    box-shadow 220ms ease-out;
+}
+.community-photo img {
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.review-grid figure {
+  transition:
+    transform 220ms ease-out,
+    border-color 220ms ease-out;
+}
+#searchDropdown:not(.hidden),
+#dropdown-menu:not(.hidden) {
+  animation: popover-in 180ms ease-out;
+  transform-origin: top center;
+}
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px #3542ff20;
+  }
+  .button:hover span,
+  .text-link:hover span {
+    transform: translate(3px, -3px);
+  }
+  .popular button:hover {
+    transform: translateY(-2px);
+  }
+  .photo-caption a:hover {
+    transform: rotate(8deg);
+    background: #ffffff25;
+  }
+  #courses-container > a:hover > div {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px #00000009;
+  }
+  .community-photo:hover img {
+    transform: scale(1.035);
+  }
+  .review-grid figure:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+  }
+}
+@media (max-width: 850px) {
+  .hero {
+    gap: 28px;
+  }
+  .values-strip p {
+    padding-inline: 16px;
+  }
+  .values-strip p:nth-child(3) {
+    border-left: 0;
+  }
+}
+@media (max-width: 600px) {
+  .hero {
+    padding-block: 32px 44px;
+  }
+  .hero h1 {
+    font-size: clamp(39px, 12vw, 52px);
+  }
+  .hero .eyebrow {
+    font-size: 8px;
+  }
+  .hero-visual {
+    margin-right: 8px;
+  }
+  .free-stamp {
+    right: 14px;
+    top: 68px;
+  }
+  .values-strip {
+    gap: 18px 0;
+  }
+  .values-strip p {
+    padding-inline: 12px;
+    font-size: 9px;
+  }
+  .filters {
+    padding: 14px 12px;
+  }
+  .review-grid figure {
+    padding: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home *,
+  .home *::before,
+  .home *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .home .button:hover,
+  .home .button:active,
+  .home .popular button:hover,
+  .home .popular button:active,
+  .home .icon-button:active,
+  .home #courses-container > a:hover > div,
+  .home .review-grid figure:hover,
+  .home .community-photo:hover img,
+  .home .button:hover span,
+  .home .text-link:hover span,
+  .home .photo-caption a:hover {
+    transform: none;
+  }
 }
